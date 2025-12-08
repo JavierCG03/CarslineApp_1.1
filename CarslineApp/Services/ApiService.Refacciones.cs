@@ -1,0 +1,163 @@
+﻿using CarslineApp.Models;
+using System.Net.Http.Json;
+
+namespace CarslineApp.Services
+{
+    public partial class ApiService
+    {
+        public async Task<List<RefaccionDto>> ObtenerRefaccionesAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Refacciones");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<List<RefaccionDto>>();
+                    return result ?? new List<RefaccionDto>();
+                }
+                return new List<RefaccionDto>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al obtener refacciones: {ex.Message}");
+                return new List<RefaccionDto>();
+            }
+        }
+
+        public async Task<RefaccionResponse> CrearRefaccionAsync(CrearRefaccionRequest request)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/Refacciones/crear", request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                    return result ?? new RefaccionResponse
+                    {
+                        Success = false,
+                        Message = "Error al procesar la respuesta"
+                    };
+                }
+
+                var errorContent = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                return errorContent ?? new RefaccionResponse
+                {
+                    Success = false,
+                    Message = "Error en la solicitud"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RefaccionResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<RefaccionResponse> AumentarCantidadAsync(int refaccionId, int cantidad)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync(
+                    $"{BaseUrl}/Refacciones/aumentar/{refaccionId}/{cantidad}",
+                    null);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                    return result ?? new RefaccionResponse
+                    {
+                        Success = false,
+                        Message = "Error al procesar la respuesta"
+                    };
+                }
+
+                var errorContent = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                return errorContent ?? new RefaccionResponse
+                {
+                    Success = false,
+                    Message = "Error en la solicitud"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RefaccionResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<RefaccionResponse> DisminuirCantidadAsync(int refaccionId, int cantidad)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsync(
+                    $"{BaseUrl}/Refacciones/disminuir/{refaccionId}/{cantidad}",
+                    null);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                    return result ?? new RefaccionResponse
+                    {
+                        Success = false,
+                        Message = "Error al procesar la respuesta"
+                    };
+                }
+
+                var errorContent = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                return errorContent ?? new RefaccionResponse
+                {
+                    Success = false,
+                    Message = "Error en la solicitud"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RefaccionResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<RefaccionResponse> EliminarRefaccionAsync(int refaccionId)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BaseUrl}/Refacciones/{refaccionId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<RefaccionResponse>();
+                    return result ?? new RefaccionResponse
+                    {
+                        Success = false,
+                        Message = "Error al procesar la respuesta"
+                    };
+                }
+
+                return new RefaccionResponse
+                {
+                    Success = false,
+                    Message = "Error en la solicitud"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new RefaccionResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
+    }
+}

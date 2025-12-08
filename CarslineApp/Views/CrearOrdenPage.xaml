@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CarslineApp.Views.CrearOrdenPage"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False"
+             Title="Crear Orden">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+
+        <!-- HEADER -->
+        <Frame Grid.Row="0" BackgroundColor="#D60000" Padding="20" Margin="0" CornerRadius="0" HasShadow="True">
+            <Label Text="{Binding TituloPaso}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"/>
+        </Frame>
+
+        <!-- CONTENIDO CON SCROLL -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- ============================= -->
+                <!-- PASO 1: CLIENTE (MÓDULO) -->
+                <!-- ============================= -->
+                <VerticalStackLayout Spacing="15" IsVisible="{Binding MostrarPaso1}">
+
+                    <!-- Búsqueda -->
+                    <Label Text="🔍 Buscar Cliente por Nombre"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#404040"/>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               Text="{Binding ClienteModule.NombreBusqueda}"
+                               Placeholder="Ej: Juan Pérez"
+                               MaxLength="100"/>
+                        <Button Grid.Column="1"
+                                Text="🔍"
+                                Command="{Binding BuscarClienteCommand}"
+                                WidthRequest="60"
+                                BackgroundColor="#4CAF50"/>
+                    </Grid>
+
+                    <!-- Lista de resultados -->
+                    <Frame IsVisible="{Binding ClienteModule.MostrarLista}"
+                           BackgroundColor="#E3F2FD"
+                           Padding="10"
+                           HasShadow="False"
+                           BorderColor="#2196F3">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Selecciona el cliente correcto:"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   TextColor="#1976D2"/>
+
+                            <CollectionView ItemsSource="{Binding ClienteModule.ClientesEncontrados}"
+                                            SelectionMode="None"
+                                            MaximumHeightRequest="300">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="White"
+                                               Padding="12"
+                                               Margin="0,5"
+                                               HasShadow="False"
+                                               BorderColor="#BDBDBD">
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer 
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SeleccionarClienteCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Frame.GestureRecognizers>
+
+                                            <VerticalStackLayout Spacing="3">
+                                                <Label Text="{Binding NombreCompleto}"
+                                                       FontSize="15"
+                                                       FontAttributes="Bold"
+                                                       TextColor="Black"/>
+                                                <Label Text="{Binding TelefonoMovil}"
+                                                       FontSize="12"
+                                                       TextColor="#666"/>
+                                                <Label Text="{Binding RFC}"
+                                                       FontSize="12"
+                                                       TextColor="#666"/>
+                                            </VerticalStackLayout>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <BoxView HeightRequest="2" BackgroundColor="#E0E0E0" Margin="0,10"/>
+
+                    <!-- Mensajes -->
+                    <Label Text="{Binding ClienteModule.ErrorMessage}"
+                           TextColor="Red"
+                           FontSize="13"
+                           IsVisible="{Binding ClienteModule.ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+                           HorizontalOptions="Center"/>
+
+                    <!-- Formulario de cliente -->
+                    <Label Text="Datos del Cliente"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#404040"/>
+
+                    <Entry Text="{Binding ClienteModule.NombreCompleto}"
+                           Placeholder="Nombre Completo *"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.RFC}"
+                           MaxLength="13"
+                           Placeholder="RFC *"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.TelefonoMovil}"
+                           MaxLength="10"
+                           Keyboard="Numeric"
+                           Placeholder="Teléfono Móvil *"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.TelefonoCasa}"
+                           MaxLength="10"
+                           Keyboard="Numeric"
+                           Placeholder="Teléfono Casa (opcional)"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.CorreoElectronico}"
+                           Placeholder="Correo Electrónico (opcional)"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <!-- Dirección -->
+                    <Label Text="Dirección" FontSize="16" FontAttributes="Bold" TextColor="#404040"/>
+
+                    <Entry Text="{Binding ClienteModule.Estado}"
+                           Placeholder="Estado"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.Municipio}"
+                           Placeholder="Municipio"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.Colonia}"
+                           Placeholder="Colonia"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Entry Text="{Binding ClienteModule.Calle}"
+                           Placeholder="Calle"
+                           IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               Text="{Binding ClienteModule.NumeroExterior}"
+                               Placeholder="Número Exterior"
+                               IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+                        <Entry Grid.Column="1"
+                               Text="{Binding ClienteModule.CodigoPostal}"
+                               Keyboard="Numeric"
+                               MaxLength="5"
+                               Placeholder="Código Postal"
+                               IsReadOnly="{Binding ClienteModule.CamposBloqueados}"/>
+                    </Grid>
+
+                    <!-- Botón editar/guardar -->
+                    <Button Text="{Binding ClienteModule.TextoBotonAccion}"
+                            Command="{Binding EditarGuardarClienteCommand}"
+                            IsVisible="{Binding ClienteModule.EsClienteExistente}"
+                            BackgroundColor="#FF9800"
+                            TextColor="White"
+                            Margin="0,10,0,0"
+                            HeightRequest="45"
+                            FontAttributes="Bold"/>
+
+                </VerticalStackLayout>
+
+                <!-- ============================= -->
+                <!-- PASO 2: VEHÍCULO (MÓDULO) -->
+                <!-- ============================= -->
+                <VerticalStackLayout Spacing="15" IsVisible="{Binding MostrarPaso2}">
+
+                    <Label Text="🔍 Buscar Vehículo por VIN"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#404040"/>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               Text="{Binding VehiculoModule.Ultimos4VIN}"
+                               Placeholder="Últimos 4 del VIN"
+                               MaxLength="4"/>
+                        <Button Grid.Column="1"
+                                Text="🔍"
+                                Command="{Binding BuscarVehiculoCommand}"
+                                WidthRequest="60"
+                                BackgroundColor="#4CAF50"/>
+                    </Grid>
+
+                    <!-- Lista de vehículos -->
+                    <Frame IsVisible="{Binding VehiculoModule.MostrarLista}"
+                           BackgroundColor="#E3F2FD"
+                           Padding="10"
+                           HasShadow="False"
+                           BorderColor="#2196F3">
+                        <CollectionView ItemsSource="{Binding VehiculoModule.VehiculosEncontrados}"
+                                        SelectionMode="None"
+                                        MaximumHeightRequest="300">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="White" Padding="12" Margin="0,5">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SeleccionarVehiculoCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                        </Frame.GestureRecognizers>
+
+                                        <VerticalStackLayout Spacing="3">
+                                            <Label Text="{Binding VehiculoCompleto}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"/>
+                                            <Label Text="{Binding VIN}" FontSize="11"/>
+                                            <Label Text="{Binding NombreCliente}" FontSize="12"/>
+                                        </VerticalStackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Frame>
+
+                    <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
+
+                    <Label Text="{Binding VehiculoModule.ErrorMessage}"
+                           TextColor="Red"
+                           IsVisible="{Binding VehiculoModule.ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"/>
+
+                    <!-- Formulario de vehículo -->
+                    <Entry Text="{Binding VehiculoModule.VIN}"
+                           Placeholder="VIN (17 caracteres) *"
+                           MaxLength="17"
+                           IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+
+                    <Entry Text="{Binding VehiculoModule.Marca}"
+                           Placeholder="Marca *"
+                           IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+
+                    <Entry Text="{Binding VehiculoModule.Modelo}"
+                           Placeholder="Modelo *"
+                           IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+
+                    <Entry Text="{Binding VehiculoModule.Version}"
+                           Placeholder="Versión *"
+                           IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+
+                    <Entry Text="{Binding VehiculoModule.Color}"
+                           Placeholder="Color"
+                           IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               Text="{Binding VehiculoModule.Anio}"
+                               Placeholder="Año"
+                               Keyboard="Numeric"
+                               MaxLength="4"
+                               IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+                        <Entry Grid.Column="1"
+                               Text="{Binding VehiculoModule.Placas}"
+                               Placeholder="Placas"
+                               MaxLength="7"
+                               IsReadOnly="{Binding VehiculoModule.CampoPlacasBloqueado}"/>
+                    </Grid>
+
+                    <Entry Text="{Binding VehiculoModule.KilometrajeInicial}"
+                           Placeholder="Kilometraje Inicial *"
+                           Keyboard="Numeric"
+                           IsReadOnly="{Binding VehiculoModule.CamposVehiculoBloqueados}"/>
+
+                    <Frame BackgroundColor="#FFF0F0" Padding="10" BorderColor="Red">
+                        <Entry Text="{Binding OrdenModule.KilometrajeActual}"
+                               Placeholder="Kilometraje ACTUAL *"
+                               Keyboard="Numeric"/>
+                    </Frame>
+
+                    <Button Text="{Binding VehiculoModule.TextoBotonAccion}"
+                            Command="{Binding EditarGuardarVehiculoCommand}"
+                            IsVisible="{Binding VehiculoModule.EsVehiculoExistente}"
+                            BackgroundColor="#FF9800"
+                            TextColor="White"/>
+
+                </VerticalStackLayout>
+
+                <!-- ============================= -->
+                <!-- PASO 3: ORDEN + HISTORIAL -->
+                <!-- ============================= -->
+                <VerticalStackLayout Spacing="15" IsVisible="{Binding MostrarPaso3}">
+
+                    <!-- HISTORIAL DEL VEHÍCULO -->
+                    <Frame BackgroundColor="#FFF3E0" Padding="15" BorderColor="#FF9800">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="📋 HISTORIAL DE SERVICIOS"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="#E65100"/>
+
+                            <ActivityIndicator IsRunning="{Binding HistorialModule.IsLoading}"
+                                               IsVisible="{Binding HistorialModule.IsLoading}"
+                                               Color="#FF9800"/>
+
+                            <Label Text="{Binding HistorialModule.ResumenHistorial}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   TextColor="#E65100"/>
+
+                            <CollectionView ItemsSource="{Binding HistorialModule.HistorialServicios}"
+                                            IsVisible="{Binding HistorialModule.TieneHistorial}"
+                                            MaximumHeightRequest="400">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="White" Padding="12" Margin="0,5">
+                                            <VerticalStackLayout Spacing="5">
+                                                <Label Text="{Binding FechaFormateada}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#E65100"/>
+                                                <Label Text="{Binding TipoServicio}"
+                                                       FontSize="13"
+                                                       FontAttributes="Bold"/>
+                                                <Label Text="{Binding ServiciosExtraResumen}"
+                                                       FontSize="11"
+                                                       TextColor="#4CAF50"
+                                                       IsVisible="{Binding TieneServiciosExtra}"/>
+                                                <Label FontSize="11" TextColor="#666">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="📏 "/>
+                                                            <Span Text="{Binding KilometrajeRegistrado, StringFormat='{0:N0} km'}"/>
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                            </VerticalStackLayout>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- DATOS DE LA ORDEN -->
+                    <Label Text="Tipo de Servicio"
+                           FontSize="16"
+                           FontAttributes="Bold"/>
+
+                    <Picker ItemsSource="{Binding OrdenModule.TiposServicio}"
+                            ItemDisplayBinding="{Binding Nombre}"
+                            SelectedItem="{Binding OrdenModule.TipoServicioSeleccionado}"
+                            Title="Selecciona el tipo de servicio"/>
+
+                    <Frame IsVisible="{Binding OrdenModule.TipoServicioSeleccionado, Converter={StaticResource NotNullConverter}}"
+                           BackgroundColor="#E8F5E9"
+                           Padding="15">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding OrdenModule.TipoServicioSeleccionado.Descripcion}"
+                                   FontSize="13"/>
+                            <Label Text="{Binding OrdenModule.TipoServicioSeleccionado.PrecioFormateado}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="#4CAF50"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Servicios Extra -->
+                    <Label Text="Servicios Extra (Opcionales)"
+                           FontSize="16"
+                           FontAttributes="Bold"/>
+
+                    <CollectionView ItemsSource="{Binding OrdenModule.ServiciosFrecuentes}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="White" Padding="10" Margin="0,5">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <CheckBox Grid.Column="0"
+                                                  IsChecked="{Binding Seleccionado}"
+                                                  CheckedChanged="OnServicioExtraChanged"/>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" Margin="10,0">
+                                            <Label Text="{Binding Nombre}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"/>
+                                            <Label Text="{Binding Categoria}"
+                                                   FontSize="11"
+                                                   TextColor="#757575"/>
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="2"
+                                               Text="{Binding PrecioFormateado}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="#4CAF50"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Fecha y hora de promesa -->
+                    <Label Text="Fecha y Hora de Promesa de Entrega"
+                           FontSize="14"
+                           FontAttributes="Bold"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <DatePicker Grid.Column="0"
+                                    Date="{Binding OrdenModule.FechaHoraPromesa}"
+                                    MinimumDate="{Binding FechaMinima}"/>
+                        <TimePicker Grid.Column="1"
+                                    Time="{Binding OrdenModule.FechaHoraPromesa, Converter={StaticResource DateTimeToTimeConverter}}"/>
+                    </Grid>
+
+                    <!-- Observaciones -->
+                    <Editor Text="{Binding OrdenModule.Observaciones}"
+                            Placeholder="Observaciones (opcional)"
+                            HeightRequest="100"/>
+
+                    <!-- Costo Total -->
+                    <Frame BackgroundColor="#4CAF50" Padding="15">
+                        <Label Text="{Binding OrdenModule.CostoTotalFormateado, StringFormat='COSTO TOTAL: {0}'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center"/>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- INDICADOR DE CARGA GLOBAL -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#D60000"
+                                   HeightRequest="40"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- BOTONES DE NAVEGACIÓN -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="0" Padding="0">
+
+            <Button Grid.Column="0"
+                    Text="◀ ANTERIOR"
+                    Command="{Binding AnteriorCommand}"
+                    IsVisible="{Binding PasoActual, Converter={StaticResource GreaterThanOneConverter}}"
+                    BackgroundColor="#757575"
+                    TextColor="White"
+                    CornerRadius="0"
+                    HeightRequest="55"
+                    FontAttributes="Bold"/>
+
+            <Button Grid.Column="1"
+                    Text="SIGUIENTE ▶"
+                    Command="{Binding SiguienteCommand}"
+                    IsVisible="{Binding MostrarBotonSiguiente}"
+                    BackgroundColor="#D60000"
+                    TextColor="White"
+                    CornerRadius="0"
+                    HeightRequest="55"
+                    FontAttributes="Bold"/>
+
+            <Button Grid.Column="0" Grid.ColumnSpan="2"
+                    Text="✓ CREAR ORDEN"
+                    Command="{Binding CrearOrdenCommand}"
+                    IsVisible="{Binding MostrarBotonCrear}"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="0"
+                    HeightRequest="55"
+                    FontAttributes="Bold"
+                    FontSize="16"/>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
