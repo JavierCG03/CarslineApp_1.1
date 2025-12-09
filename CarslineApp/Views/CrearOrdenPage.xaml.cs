@@ -13,13 +13,10 @@ namespace CarslineApp.Views
             BindingContext = _viewModel;
         }
 
-        /// <summary>
-        /// ? Evento para recalcular costo cuando se selecciona/deselecciona un servicio extra
-        /// </summary>
+        // Evento para recalcular costo cuando se selecciona un servicio extra
         private void OnServicioExtraChanged(object sender, CheckedChangedEventArgs e)
         {
-            // Recalcular el costo total cuando cambia la selección
-            _viewModel.OrdenModule.CalcularCostoTotal();
+            _viewModel.CalcularCostoTotal();
         }
     }
 }

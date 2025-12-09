@@ -212,15 +212,17 @@ namespace CarslineApp.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{BaseUrl}/Ordenes/historial-vehiculo/{vehiculoId}");
+                var response = await _httpClient.GetAsync(
+                    $"{BaseUrl}/Ordenes/historial-servicio/{vehiculoId}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<HistorialVehiculoResponse>();
+
                     return result ?? new HistorialVehiculoResponse
                     {
                         Success = false,
-                        Message = "Error al procesar respuesta",
+                        Message = "Error al procesar la respuesta del servidor",
                         Historial = new List<HistorialServicioDto>()
                     };
                 }
@@ -228,7 +230,7 @@ namespace CarslineApp.Services
                 return new HistorialVehiculoResponse
                 {
                     Success = false,
-                    Message = "Error al obtener historial",
+                    Message = "No se pudo obtener el historial",
                     Historial = new List<HistorialServicioDto>()
                 };
             }
@@ -242,6 +244,7 @@ namespace CarslineApp.Services
                 };
             }
         }
+
 
     }
 }
