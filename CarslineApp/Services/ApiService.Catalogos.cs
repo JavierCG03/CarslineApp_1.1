@@ -18,8 +18,9 @@ namespace CarslineApp.Services
                 }
                 return new List<TipoServicioDto>();
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error al obtener tipos de servicio: {ex.Message}");
                 return new List<TipoServicioDto>();
             }
         }
@@ -37,11 +38,11 @@ namespace CarslineApp.Services
                 }
                 return new List<ServicioExtraDto>();
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error al obtener servicios frecuentes: {ex.Message}");
                 return new List<ServicioExtraDto>();
             }
         }
     }
 }
-

@@ -1,5 +1,4 @@
-﻿
-namespace CarslineApp.Models
+﻿namespace CarslineApp.Models
 {
     // ============================================
     // ✅ MODELOS DE ÓRDENES - ACTUALIZADOS
@@ -21,6 +20,7 @@ namespace CarslineApp.Models
         public string NombreTecnico { get; set; } = string.Empty;
         public decimal CostoTotal { get; set; }
         public int EstadoId { get; set; }
+        public string TipoServicio { get; set; } = string.Empty; // ✅ AGREGADO
 
         // ✅ NUEVOS CAMPOS
         public int TotalTrabajos { get; set; }
@@ -94,10 +94,24 @@ namespace CarslineApp.Models
         public int TipoOrdenId { get; set; }
         public int ClienteId { get; set; }
         public int VehiculoId { get; set; }
+        public int TipoServicioId { get; set; }
         public int KilometrajeActual { get; set; }
         public DateTime FechaHoraPromesaEntrega { get; set; }
         public string? ObservacionesAsesor { get; set; }
         public List<string> Trabajos { get; set; } = new();
+    }
+
+    /// <summary>
+    /// ✅ AGREGADO: Response para crear orden con trabajos
+    /// </summary>
+    public class CrearOrdenResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string NumeroOrden { get; set; } = string.Empty;
+        public int OrdenId { get; set; }
+        public int TotalTrabajos { get; set; }
+        public decimal CostoTotal { get; set; }
     }
 
     // ============================================
@@ -124,17 +138,4 @@ namespace CarslineApp.Models
         public string PrecioFormateado => $"${Precio:N2}";
     }
 
-    // ============================================
-    // RESPUESTAS DE ÓRDENES
-    // ============================================
-
-    public class CrearOrdenResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public string NumeroOrden { get; set; } = string.Empty;
-        public int OrdenId { get; set; }
-        public int TotalTrabajos { get; set; }
-        public decimal CostoTotal { get; set; }
-    }
 }

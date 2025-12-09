@@ -21,7 +21,7 @@ namespace CarslineApp.ViewModels.Modules
 
         // Datos de la orden
         private int _kilometrajeActual;
-        private DateTime _fechaHoraPromesa = DateTime.Now.AddHours(4);
+        private DateTime _fechaHoraPromesa = DateTime.Now.AddHours(5);
         private string _observaciones = string.Empty;
         private TipoServicioDto _tipoServicioSeleccionado;
         private ObservableCollection<TipoServicioDto> _tiposServicio = new();
@@ -162,7 +162,7 @@ namespace CarslineApp.ViewModels.Modules
         }
 
         /// <summary>
-        /// Crear orden completa con todos los datos
+        /// ✅ CORREGIDO: Crear orden completa con todos los datos
         /// </summary>
         public async Task<(bool Success, string NumeroOrden, decimal CostoTotal, string Message)> CrearOrdenAsync(
             int clienteId,
@@ -171,7 +171,7 @@ namespace CarslineApp.ViewModels.Modules
         {
             if (!Validar(kilometrajeInicial))
             {
-                return (false, null, 0, ErrorMessage);
+                return (false, string.Empty, 0, ErrorMessage);
             }
 
             IsLoading = true;
@@ -185,24 +185,39 @@ namespace CarslineApp.ViewModels.Modules
                 System.Diagnostics.Debug.WriteLine($"   Tipo Orden: {_tipoOrdenId}");
                 System.Diagnostics.Debug.WriteLine($"   Tipo Servicio: {TipoServicioSeleccionado?.Nombre}");
 
-                // Obtener IDs de servicios extra seleccionados
-                var serviciosSeleccionados = ServiciosFrecuentes
-                    .Where(s => s.Seleccionado)
-                    .Select(s => s.Id)
-                    .ToList();
+                // ✅ CONSTRUIR LISTA DE TRABAJOS
+                var trabajos = new List<string>();
 
-                System.Diagnostics.Debug.WriteLine($"   Servicios extra: {serviciosSeleccionados.Count}");
+                // 1. Agregar el servicio principal
+                if (TipoServicioSeleccionado != null)
+                {
+                    trabajos.Add($"{TipoServicioSeleccionado.Nombre} - ${TipoServicioSeleccionado.Precio:N2}");
+                }
 
+                // 2. Agregar servicios extra seleccionados
+                var serviciosSeleccionados = ServiciosFrecuentes.Where(s => s.Seleccionado).ToList();
+                foreach (var servicio in serviciosSeleccionados)
+                {
+                    trabajos.Add($"{servicio.Nombre} - ${servicio.Precio:N2}");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"   Total trabajos: {trabajos.Count}");
+                foreach (var trabajo in trabajos)
+                {
+                    System.Diagnostics.Debug.WriteLine($"      • {trabajo}");
+                }
+
+                // ✅ CREAR REQUEST CON LISTA DE TRABAJOS
                 var request = new CrearOrdenConTrabajosRequest
                 {
                     TipoOrdenId = _tipoOrdenId,
                     ClienteId = clienteId,
                     VehiculoId = vehiculoId,
-                    //TipoServicioId = TipoServicioSeleccionado.Id,
+                    TipoServicioId = TipoServicioSeleccionado.Id,
                     KilometrajeActual = KilometrajeActual,
                     FechaHoraPromesaEntrega = FechaHoraPromesa,
                     ObservacionesAsesor = Observaciones,
-                    //ServiciosExtraIds = serviciosSeleccionados
+                    Trabajos = trabajos  // ✅ Lista de trabajos
                 };
 
                 // Obtener ID del asesor desde preferencias
@@ -211,30 +226,31 @@ namespace CarslineApp.ViewModels.Modules
                 if (asesorId == 0)
                 {
                     ErrorMessage = "No se pudo identificar al asesor. Por favor, inicia sesión nuevamente.";
-                    return (false, null, 0, ErrorMessage);
+                    return (false, string.Empty, 0, ErrorMessage);
                 }
 
                 System.Diagnostics.Debug.WriteLine($"   Asesor ID: {asesorId}");
-                /*
-                var response = await _apiService.CrearOrdenCompletaAsync(request, asesorId);
+
+                // ✅ LLAMAR AL API
+                var response = await _apiService.CrearOrdenConTrabajosAsync(request, asesorId);
 
                 if (response.Success)
                 {
                     System.Diagnostics.Debug.WriteLine($"✅ Orden creada: {response.NumeroOrden}");
-                    return (true, response.NumeroOrden, response.CostoTotal, $"Costo Total: ${response.CostoTotal:N2}");
+                    return (true, response.NumeroOrden, CostoTotal, $"Costo Total: ${CostoTotal:N2}");
                 }
                 else
                 {
                     ErrorMessage = response.Message;
                     System.Diagnostics.Debug.WriteLine($"❌ Error: {response.Message}");
-                    return (false, null, 0, response.Message);
-                }*/
+                    return (false, string.Empty, 0, response.Message);
+                }
             }
             catch (Exception ex)
             {
                 ErrorMessage = $"Error al crear orden: {ex.Message}";
                 System.Diagnostics.Debug.WriteLine($"❌ Excepción: {ex.Message}");
-                return (false, null, 0, ex.Message);
+                return (false, string.Empty, 0, ex.Message);
             }
             finally
             {
