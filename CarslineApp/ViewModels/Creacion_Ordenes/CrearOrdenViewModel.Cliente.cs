@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using CarslineApp.Models;
-using Microsoft.Maui.Controls;
-using System.Threading.Tasks;   
 
 namespace CarslineApp.ViewModels
 {

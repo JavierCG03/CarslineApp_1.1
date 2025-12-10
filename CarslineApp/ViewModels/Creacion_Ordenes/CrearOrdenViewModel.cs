@@ -1,10 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CarslineApp.Models;
 using CarslineApp.Services;
-using Microsoft.Maui.Controls;
 
 namespace CarslineApp.ViewModels
 {
@@ -36,8 +35,12 @@ namespace CarslineApp.ViewModels
             AnteriorCommand = new Command(() => Anterior());
             CrearOrdenServicioCommand = new Command(async () => await CrearOrdenServicio(), () => !IsLoading);
             CrearOrdenReparacionCommand = new Command(async () => await CrearOrdenReparacion(), () => !IsLoading);
+            CrearOrdenDiagnosticoCommand = new Command(async () => await CrearOrdenDiagnostico(), () => !IsLoading);
+            CrearOrdenGarantiaCommand = new Command(async () => await CrearOrdenGarantia(), () => !IsLoading);
             EditarGuardarClienteCommand = new Command(async () => await EditarGuardarCliente());
             EditarGuardarVehiculoCommand = new Command(async () => await EditarGuardarVehiculo());
+            AgregarTrabajoPersonalizadoCommand = new Command(AgregarTrabajoPersonalizado);
+            EliminarTrabajoPersonalizadoCommand = new Command<TrabajoPersonalizado>(EliminarTrabajoPersonalizado);
 
             CargarCatalogos();
 
@@ -131,6 +134,9 @@ namespace CarslineApp.ViewModels
         public ICommand CrearOrdenGarantiaCommand { get; }
         public ICommand EditarGuardarClienteCommand { get; }
         public ICommand EditarGuardarVehiculoCommand { get; }
+        public ICommand AgregarTrabajoPersonalizadoCommand { get; }
+        public ICommand EliminarTrabajoPersonalizadoCommand { get; }
+
 
         #endregion
 
@@ -275,6 +281,15 @@ namespace CarslineApp.ViewModels
 
                 // Cargar historial al pasar al paso 3
                 await CargarHistorialVehiculo();
+                // Recalcular servicio subsecuente cuando cambie el kilometraje y tip de orden sea Servicio
+                if (TieneHistorial && KilometrajeActual > 0 && _tipoOrdenId == 1)
+                {
+                    CalcularServicioSubsecuente();
+                }
+                else if (TieneHistorial && KilometrajeActual > 0 && _tipoOrdenId == 4)
+                {
+                    ValidacionGarantia();
+                }
 
                 PasoActual = 3;
             }

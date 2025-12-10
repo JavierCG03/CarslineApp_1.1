@@ -1,6 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using CarslineApp.Models;
-using Microsoft.Maui.Controls;
+﻿using CarslineApp.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+
 
 namespace CarslineApp.ViewModels
 {
@@ -10,7 +11,8 @@ namespace CarslineApp.ViewModels
     public partial class CrearOrdenViewModel
     {
         #region Campos Privados Orden
-
+        private string _nombreTrabajoPersonalizado = string.Empty;
+        private string _descripcionTrabajoPersonalizado = string.Empty;
         private int _kilometrajeActual;
         private DateTime _fechaHoraPromesa = DateTime.Now.AddHours(5);
         private string _observaciones = string.Empty;
@@ -22,6 +24,16 @@ namespace CarslineApp.ViewModels
 
         #region Propiedades Orden
 
+        public string NombreTrabajoPersonalizado
+        {
+            get => _nombreTrabajoPersonalizado;
+            set { _nombreTrabajoPersonalizado = value; OnPropertyChanged(); }
+        }
+        public string DescripcionTrabajoPersonalizado
+        {
+            get => _descripcionTrabajoPersonalizado;
+            set { _descripcionTrabajoPersonalizado = value; OnPropertyChanged(); }
+        }
         public int KilometrajeActual
         {
             get => _kilometrajeActual;
@@ -30,11 +42,7 @@ namespace CarslineApp.ViewModels
                 _kilometrajeActual = value;
                 OnPropertyChanged();
 
-                // Recalcular servicio subsecuente cuando cambie el kilometraje
-                if (TieneHistorial && value > 0)
-                {
-                    CalcularServicioSubsecuente();
-                }
+
             }
         }
 
@@ -98,6 +106,7 @@ namespace CarslineApp.ViewModels
             get => _historialServicios;
             set { _historialServicios = value; OnPropertyChanged(); }
         }
+        public ObservableCollection<TrabajoPersonalizado> TrabajosPersonalizados { get; set; } = new ObservableCollection<TrabajoPersonalizado>();
 
         /// <summary>
         /// Indicador de carga del historial
@@ -239,20 +248,43 @@ namespace CarslineApp.ViewModels
         /// </summary>
         private void CalcularServicioSubsecuente()
         {
+            int kmRecorridos;
             // Si no hay historial, es servicio externo
             if (!TieneHistorial || !HistorialServicios.Any())
             {
-                ServicioSugerido = "🔧 SERVICIO EXTERNO";
-                MensajeServicioSugerido = "Sin historial de servicios previos";
-                ColorServicioSugerido = "#FF9800";
-                return;
+                kmRecorridos= KilometrajeActual-KilometrajeInicial;
+
+                if (kmRecorridos<6000 && kmRecorridos != 0 )
+                {
+
+                    ServicioSugerido = $"PRIMER SERVICIO";
+                    ColorServicioSugerido = "#4CAF50";
+                    MensajeServicioSugerido = $"✅ En tiempo y forma ({kmRecorridos:N0} km recorridos)";
+
+                    return;
+                }
+                else if(kmRecorridos > 6000)
+                {                     
+                    ServicioSugerido = "🔧 SERVICIO EXTERNO";
+                    MensajeServicioSugerido = $"⚠️ Excedió los 6,000 km ({kmRecorridos:N0} km recorridos)";
+                    ColorServicioSugerido = "#FF9800";
+                    return;
+                }   
+                else
+                {
+                    ServicioSugerido = "🔧 SERVICIO EXTERNO";
+                    MensajeServicioSugerido = "Sin historial de servicios previos";
+                    ColorServicioSugerido = "#FF9800";
+                    return;
+
+                }
             }
 
             // Obtener el último servicio
             var ultimoServicio = HistorialServicios.First();
 
             // Calcular diferencias
-            int kmRecorridos = KilometrajeActual - ultimoServicio.KilometrajeRegistrado;
+            kmRecorridos = KilometrajeActual - ultimoServicio.KilometrajeRegistrado;
             DateTime fechaActual = DateTime.Now;
             TimeSpan tiempoTranscurrido = fechaActual - ultimoServicio.FechaServicio;
             int mesesTranscurridos = (int)(tiempoTranscurrido.TotalDays / 30);
@@ -263,6 +295,7 @@ namespace CarslineApp.ViewModels
             // Validar si se excedieron los límites (6000 km o 5 meses)
             bool excedioKilometraje = kmRecorridos > 6000;
             bool excedioTiempo = mesesTranscurridos > 5;
+            bool VioloOdometro = kmRecorridos < 0;
 
             if (excedioKilometraje || excedioTiempo)
             {
@@ -277,8 +310,14 @@ namespace CarslineApp.ViewModels
                     razones.Add($"Excedió los 5 meses ({mesesTranscurridos} meses transcurridos)");
 
                 MensajeServicioSugerido = $"⚠️ {string.Join(" y ", razones)}";
+       
+            }
+            else if(VioloOdometro)
+            {
+                ServicioSugerido = "🔧 SERVICIO EXTERNO";
+                ColorServicioSugerido = "#FF9800";
+                MensajeServicioSugerido = $"Posible violación de odómetro: el kilometraje del último servicio fue de {ultimoServicio.KilometrajeRegistrado:N0} km y el kilometraje actual es de {KilometrajeActual:N0} km.";
 
-                System.Diagnostics.Debug.WriteLine($"   ❌ Servicio EXTERNO: {MensajeServicioSugerido}");
             }
             else
             {
@@ -323,39 +362,198 @@ namespace CarslineApp.ViewModels
 
         #endregion
 
+        #region Validacion Garantia
+        private void ValidacionGarantia()
+        {
+            int kmRecorridos;
+            // Si no hay historial, es servicio externo
+            if (!TieneHistorial || !HistorialServicios.Any())
+            {
+                kmRecorridos = KilometrajeActual - KilometrajeInicial;
+
+                if (kmRecorridos < 5000 && kmRecorridos != 0)
+                {
+
+                    ServicioSugerido = $"Garantia Valida";
+                    ColorServicioSugerido = "#4CAF50";
+                    MensajeServicioSugerido = $"✅ Servicios cumplidos en tiempo y forma ({kmRecorridos:N0} km recorridos)";
+
+                    return;
+                }
+                else if (kmRecorridos > 5000)
+                {
+                    ServicioSugerido = "Sin Garantia";
+                    MensajeServicioSugerido = $"⚠️ Excedió los 5,000 km desde su ultimo servicio ({kmRecorridos:N0} km recorridos)";
+                    ColorServicioSugerido = "#F44336";
+
+                    return;
+                }
+                else
+                {
+                    ServicioSugerido = "Sin Garantia";
+                    MensajeServicioSugerido = "No tiene historial de servicios previos";
+                    ColorServicioSugerido = "#F44336";
+
+                    return;
+
+                }
+            }
+
+            // Obtener el último servicio
+            var ultimoServicio = HistorialServicios.First();
+
+            // Calcular diferencias
+            kmRecorridos = KilometrajeActual - ultimoServicio.KilometrajeRegistrado;
+            DateTime fechaActual = DateTime.Now;
+            TimeSpan tiempoTranscurrido = fechaActual - ultimoServicio.FechaServicio;
+            int mesesTranscurridos = (int)(tiempoTranscurrido.TotalDays / 30);
+
+            // Determinar el tipo de servicio anterior
+            string tipoServicioAnterior = ultimoServicio.TipoServicio.ToUpper();
+
+            // Validar si se excedieron los límites (5000 km o 4 meses)
+            bool excedioKilometraje = kmRecorridos > 5000;
+            bool excedioTiempo = mesesTranscurridos > 4;
+            bool VioloOdometro = kmRecorridos < 0;
+
+            if (excedioKilometraje || excedioTiempo)
+            {
+                // Se excedieron los límites, servicio externo
+                ServicioSugerido = "SIN GARANTIA";
+                ColorServicioSugerido = "#F44336";
+
+
+                List<string> razones = new List<string>();
+                if (excedioKilometraje)
+                    razones.Add($"Excedió los 5,000 km desde su ultimo Servicio({kmRecorridos:N0} km recorridos)");
+                if (excedioTiempo)
+                    razones.Add($"Excedió los 4 meses desde su ultimo Servicio({mesesTranscurridos} meses transcurridos)");
+
+                MensajeServicioSugerido = $"⚠️ {string.Join(" y ", razones)}";
+
+            }
+            else if(VioloOdometro)
+            {
+                ServicioSugerido = "SIN GARANTIA";
+                ColorServicioSugerido = "#F44336";
+                MensajeServicioSugerido = $"Posible violación de odómetro: el kilometraje del último servicio fue de {ultimoServicio.KilometrajeRegistrado:N0} km y el kilometraje actual es de {KilometrajeActual:N0} km.";
+
+            }
+            else
+            {
+                // Dentro de los límites, determinar servicio subsecuente
+                string servicioSubsecuente = DeterminarGarantia(tipoServicioAnterior);
+
+                if (servicioSubsecuente == "EXTERNO")
+                {
+                    ServicioSugerido = "Sin Garantia";
+                    ColorServicioSugerido = "#F44336";
+                    MensajeServicioSugerido = "Se ha terminado el Periodo de Garantia";
+                }
+                else
+                {
+                    ServicioSugerido = $"✨ {servicioSubsecuente}";
+                    ColorServicioSugerido = "#4CAF50";
+                    MensajeServicioSugerido = $"Servicios cumplidos en tiempo y forma ({kmRecorridos:N0} km / {mesesTranscurridos} meses desde último servicio)";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determinar el servicio subsecuente basado en el servicio anterior
+        /// </summary>
+        private string DeterminarGarantia(string servicioAnterior)
+        {
+            // Normalizar el nombre del servicio
+            if (servicioAnterior.Contains("1") || servicioAnterior.Contains("PRIMER"))
+                return "Garantia Valida";
+
+            if (servicioAnterior.Contains("2") || servicioAnterior.Contains("SEGUNDO"))
+                return "Garantia Valida";
+
+            if (servicioAnterior.Contains("3") || servicioAnterior.Contains("TERCER"))
+                return "EXTERNO";
+
+            // Si no es ninguno de los anteriores, es externo
+            return "EXTERNO";
+        }
+        #endregion 
+
+        #region Trabajos Personalizados
+        private void AgregarTrabajoPersonalizado()
+        {
+            if (string.IsNullOrWhiteSpace(NombreTrabajoPersonalizado))
+            {
+                ErrorMessage = "Ingresa el nombre del trabajo";
+                return;
+            }
+
+            var trabajoNuevo = new TrabajoPersonalizado
+            {
+                Nombre = NombreTrabajoPersonalizado,
+                Descripcion = DescripcionTrabajoPersonalizado,
+
+            };
+
+            TrabajosPersonalizados.Add(trabajoNuevo);
+
+            // Limpiar campos
+            NombreTrabajoPersonalizado = string.Empty;
+            DescripcionTrabajoPersonalizado = string.Empty;
+            ErrorMessage = string.Empty;
+        }
+
+        private void EliminarTrabajoPersonalizado(TrabajoPersonalizado trabajo)
+        {
+            TrabajosPersonalizados.Remove(trabajo);
+        }
+
+        #endregion
+
         #region Métodos de Creación de Orden
-        private async Task CrearOrdenReparacion()
+
+        private async Task CrearOrdenGarantia()
         {
             IsLoading = true;
             ErrorMessage = string.Empty;
             try
             {
                 var trabajos = new List<string>();
-                var serviciosSeleccionados = ServiciosExtra.Where(s => s.Seleccionado).ToList();
-                foreach (var servicio in serviciosSeleccionados)
+                // 2. Agregar trabajos personalizados
+                foreach (var trabajo in TrabajosPersonalizados)
                 {
-                    trabajos.Add($"{servicio.Nombre} - ${servicio.Precio:N2}");
+                    var descripcion = string.IsNullOrWhiteSpace(trabajo.Descripcion)
+                        ? trabajo.Nombre
+                        : $"{trabajo.Nombre} ({trabajo.Descripcion})";
+                    trabajos.Add(trabajo.Nombre);
+                }
+                // Validar que haya al menos un trabajo
+                if (trabajos.Count == 0)
+                {
+                    ErrorMessage = "Debe agregar al menos una reparación o trabajo";
+                    return;
                 }
                 var request = new CrearOrdenConTrabajosRequest
                 {
                     TipoOrdenId = _tipoOrdenId,
                     ClienteId = ClienteId,
                     VehiculoId = VehiculoId,
-                    TipoServicioId = TipoServicioSeleccionado.Id,
+                    TipoServicioId = 5,  // Tipo de servicio Sin Servicio
                     KilometrajeActual = KilometrajeActual,
                     FechaHoraPromesaEntrega = FechaHoraPromesa,
                     ObservacionesAsesor = Observaciones,
                     Trabajos = trabajos
                 };
+
                 int asesorId = Preferences.Get("user_id", 0);
                 var response = await _apiService.CrearOrdenConTrabajosAsync(request, asesorId);
+
                 if (response.Success)
                 {
                     await Application.Current.MainPage.DisplayAlert(
                         "¡Éxito!",
-                        $"Orden {response.NumeroOrden} creada exitosamente\nCosto Total: ${response.CostoTotal:N2}",
+                        $"Orden {response.NumeroOrden} creada exitosamente \n",
                         "OK");
-
                     await Application.Current.MainPage.Navigation.PopAsync();
                     MessagingCenter.Send(this, "OrdenCreada");
                 }
@@ -364,7 +562,137 @@ namespace CarslineApp.ViewModels
                     ErrorMessage = response.Message;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
 
+        }
+        private async Task CrearOrdenDiagnostico()
+        {
+            IsLoading = true;
+            ErrorMessage = string.Empty;
+            try 
+            {
+                var trabajos = new List<string>();
+                // 2. Agregar trabajos personalizados
+                foreach (var trabajo in TrabajosPersonalizados)
+                {
+                    var descripcion = string.IsNullOrWhiteSpace(trabajo.Descripcion)
+                        ? trabajo.Nombre
+                        : $"{trabajo.Nombre} ({trabajo.Descripcion})";
+                    trabajos.Add(trabajo.Nombre);
+                }
+                // Validar que haya al menos un trabajo
+                if (trabajos.Count == 0)
+                {
+                    ErrorMessage = "Debe agregar al menos una reparación o trabajo";
+                    return;
+                }
+                var request = new CrearOrdenConTrabajosRequest
+                {
+                    TipoOrdenId = _tipoOrdenId,
+                    ClienteId = ClienteId,
+                    VehiculoId = VehiculoId,
+                    TipoServicioId = 5,  // Tipo de servicio Sin Servicio
+                    KilometrajeActual = KilometrajeActual,
+                    FechaHoraPromesaEntrega = FechaHoraPromesa,
+                    ObservacionesAsesor = Observaciones,
+                    Trabajos = trabajos
+                };
+
+                int asesorId = Preferences.Get("user_id", 0);
+                var response = await _apiService.CrearOrdenConTrabajosAsync(request, asesorId);
+
+                if (response.Success)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "¡Éxito!",
+                        $"Orden {response.NumeroOrden} creada exitosamente \n",
+                        "OK");
+                    await Application.Current.MainPage.Navigation.PopAsync();
+                    MessagingCenter.Send(this, "OrdenCreada");
+                }
+                else
+                {
+                    ErrorMessage = response.Message;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task CrearOrdenReparacion()
+        {
+            IsLoading = true;
+            ErrorMessage = string.Empty;
+            try
+            {
+                var trabajos = new List<string>();
+
+                // 1. Agregar reparaciones frecuentes seleccionadas
+                var serviciosSeleccionados = ServiciosExtra.Where(s => s.Seleccionado).ToList();
+                foreach (var servicio in serviciosSeleccionados)
+                {
+                    trabajos.Add(servicio.Nombre);
+                }
+
+                // 2. Agregar trabajos personalizados
+                foreach (var trabajo in TrabajosPersonalizados)
+                {
+                    var descripcion = string.IsNullOrWhiteSpace(trabajo.Descripcion)
+                        ? trabajo.Nombre
+                        : $"{trabajo.Nombre} ({trabajo.Descripcion})";
+                    trabajos.Add(trabajo.Nombre);
+                }
+
+                // Validar que haya al menos un trabajo
+                if (trabajos.Count == 0)
+                {
+                    ErrorMessage = "Debe agregar al menos una reparación o trabajo";
+                    return;
+                }
+
+                var request = new CrearOrdenConTrabajosRequest
+                {
+                    TipoOrdenId = _tipoOrdenId,
+                    ClienteId = ClienteId,
+                    VehiculoId = VehiculoId,
+                    TipoServicioId = 5,  // Tipo de servicio Sin Servicio
+                    KilometrajeActual = KilometrajeActual,
+                    FechaHoraPromesaEntrega = FechaHoraPromesa,
+                    ObservacionesAsesor = Observaciones,
+                    Trabajos = trabajos
+                };
+
+                int asesorId = Preferences.Get("user_id", 0);
+                var response = await _apiService.CrearOrdenConTrabajosAsync(request, asesorId);
+
+                if (response.Success)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "¡Éxito!",
+                        $"Orden {response.NumeroOrden} creada exitosamente \n",
+                        "OK");
+                    await Application.Current.MainPage.Navigation.PopAsync();
+                    MessagingCenter.Send(this, "OrdenCreada");
+                }
+                else
+                {
+                    ErrorMessage = response.Message;
+                }
             }
             catch (Exception ex)
             {
@@ -394,14 +722,14 @@ namespace CarslineApp.ViewModels
                 // 1. Agregar el servicio principal
                 if (TipoServicioSeleccionado != null)
                 {
-                    trabajos.Add($"{TipoServicioSeleccionado.Nombre} - ${TipoServicioSeleccionado.Precio:N2}");
+                    trabajos.Add(TipoServicioSeleccionado.Nombre);
                 }
 
                 // 2. Agregar servicios extra seleccionados
                 var serviciosSeleccionados = ServiciosExtra.Where(s => s.Seleccionado).ToList();
                 foreach (var servicio in serviciosSeleccionados)
                 {
-                    trabajos.Add($"{servicio.Nombre} - ${servicio.Precio:N2}");
+                    trabajos.Add(servicio.Nombre);
                 }
                 var request = new CrearOrdenConTrabajosRequest
                 {

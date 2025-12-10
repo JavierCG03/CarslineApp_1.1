@@ -173,5 +173,12 @@
             5 => Color.FromArgb("#F44336"), // Cancelado - Rojo
             _ => Colors.Gray
         };
+
+    }
+    public class TrabajoPersonalizado
+    {
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+
     }
 }
