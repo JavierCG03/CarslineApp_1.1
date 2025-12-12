@@ -142,6 +142,43 @@ namespace CarslineApp.ViewModels
         /// <summary>
         /// Buscar vehículos por últimos 4 dígitos del VIN
         /// </summary>
+        
+        private async Task BuscarVehiculoCliente(int ClinteId)
+        {
+            try
+            {
+                var response = await _apiService.BuscarVehiculosPorClienteIdAsync(ClienteId);
+
+                if (response.Success && response.Vehiculos != null && response.Vehiculos.Any())
+                {
+                    VehiculosEncontrados.Clear();
+                    foreach (var vehiculo in response.Vehiculos)
+                    {
+                        VehiculosEncontrados.Add(vehiculo);
+                    }
+
+                    // mostrar vehículos encontrados
+                    MostrarListaVehiculos = true;
+                    ErrorMessage = $"Se encontraron {VehiculosEncontrados.Count} vehículos. Selecciona uno:";
+
+                }
+                else
+                {
+                    ErrorMessage = response.Message ?? "No hay vehiculos asignados a este cliente puedes registrar uno nuevo.";
+                    MostrarListaVehiculos = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+                MostrarListaVehiculos = false;
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+
+        }
         private async Task BuscarVehiculo()
         {
             if (ModoEdicionVehiculo)

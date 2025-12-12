@@ -52,6 +52,51 @@ namespace CarslineApp.Services
             }
         }
 
+        public async Task<BuscarVehiculosResponse> BuscarVehiculosPorClienteIdAsync(int ClienteId)
+        {
+            try
+            {
+                if (ClienteId < 0) 
+                {
+                    return new BuscarVehiculosResponse
+                    {
+                        Success = false,
+                        Message = "ID invalido",
+                        Vehiculos = new List<VehiculoDto>()
+                    };
+                }
+
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Vehiculos/buscarClienteId/{ClienteId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<BuscarVehiculosResponse>();
+                    return result ?? new BuscarVehiculosResponse
+                    {
+                        Success = false,
+                        Message = "Error al procesar respuesta",
+                        Vehiculos = new List<VehiculoDto>()
+                    };
+                }
+
+                return new BuscarVehiculosResponse
+                {
+                    Success = false,
+                    Message = "Error en la búsqueda",
+                    Vehiculos = new List<VehiculoDto>()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BuscarVehiculosResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}",
+                    Vehiculos = new List<VehiculoDto>()
+                };
+            }
+        }
+
         public async Task<VehiculoResponse> ObtenerVehiculoPorIdAsync(int vehiculoId)
         {
             try

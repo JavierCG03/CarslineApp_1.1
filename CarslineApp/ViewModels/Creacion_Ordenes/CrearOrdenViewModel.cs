@@ -226,7 +226,7 @@ namespace CarslineApp.ViewModels
                         IsLoading = false;
                     }
                 }
-
+                BuscarVehiculoCliente(ClienteId);
                 PasoActual = 2;
             }
             else if (PasoActual == 2)
