@@ -40,7 +40,7 @@ namespace CarslineApp.ViewModels
             EditarGuardarClienteCommand = new Command(async () => await EditarGuardarCliente());
             EditarGuardarVehiculoCommand = new Command(async () => await EditarGuardarVehiculo());
             AgregarTrabajoPersonalizadoCommand = new Command(AgregarTrabajoPersonalizado);
-            EliminarTrabajoPersonalizadoCommand = new Command<TrabajoPersonalizado>(EliminarTrabajoPersonalizado);
+            EliminarTrabajoPersonalizadoCommand = new Command<TrabajoCrearDto>(EliminarTrabajoPersonalizado);
 
             CargarCatalogos();
 

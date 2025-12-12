@@ -58,6 +58,7 @@ namespace CarslineApp.ViewModels
             set { _observaciones = value; OnPropertyChanged(); }
         }
 
+
         public TipoServicioDto TipoServicioSeleccionado
         {
             get => _tipoServicioSeleccionado;
@@ -106,7 +107,7 @@ namespace CarslineApp.ViewModels
             get => _historialServicios;
             set { _historialServicios = value; OnPropertyChanged(); }
         }
-        public ObservableCollection<TrabajoPersonalizado> TrabajosPersonalizados { get; set; } = new ObservableCollection<TrabajoPersonalizado>();
+        public ObservableCollection<TrabajoCrearDto> TrabajosPersonalizados { get; set; } = new ObservableCollection<TrabajoCrearDto>();
 
         /// <summary>
         /// Indicador de carga del historial
@@ -273,7 +274,7 @@ namespace CarslineApp.ViewModels
                 else
                 {
                     ServicioSugerido = "🔧 SERVICIO EXTERNO";
-                    MensajeServicioSugerido = "Sin historial de servicios previos";
+                    MensajeServicioSugerido = $"Sin historial de servicios previos {kmRecorridos:N0} Km ";
                     ColorServicioSugerido = "#FF9800";
                     return;
 
@@ -488,10 +489,10 @@ namespace CarslineApp.ViewModels
                 return;
             }
 
-            var trabajoNuevo = new TrabajoPersonalizado
+            var trabajoNuevo = new TrabajoCrearDto
             {
-                Nombre = NombreTrabajoPersonalizado,
-                Descripcion = DescripcionTrabajoPersonalizado,
+                Trabajo = NombreTrabajoPersonalizado,
+                Indicaciones = DescripcionTrabajoPersonalizado,
 
             };
 
@@ -503,7 +504,7 @@ namespace CarslineApp.ViewModels
             ErrorMessage = string.Empty;
         }
 
-        private void EliminarTrabajoPersonalizado(TrabajoPersonalizado trabajo)
+        private void EliminarTrabajoPersonalizado(TrabajoCrearDto trabajo)
         {
             TrabajosPersonalizados.Remove(trabajo);
         }
@@ -518,15 +519,19 @@ namespace CarslineApp.ViewModels
             ErrorMessage = string.Empty;
             try
             {
-                var trabajos = new List<string>();
+                var trabajos = new List<TrabajoCrearDto>();
                 // 2. Agregar trabajos personalizados
                 foreach (var trabajo in TrabajosPersonalizados)
                 {
-                    var descripcion = string.IsNullOrWhiteSpace(trabajo.Descripcion)
-                        ? trabajo.Nombre
-                        : $"{trabajo.Nombre} ({trabajo.Descripcion})";
-                    trabajos.Add(trabajo.Nombre);
+                    trabajos.Add(new TrabajoCrearDto
+                    {
+                        Trabajo = trabajo.Trabajo,
+                        Indicaciones = string.IsNullOrWhiteSpace(trabajo.Indicaciones)
+                            ? null
+                            : trabajo.Indicaciones
+                    });
                 }
+
                 // Validar que haya al menos un trabajo
                 if (trabajos.Count == 0)
                 {
@@ -579,14 +584,17 @@ namespace CarslineApp.ViewModels
             ErrorMessage = string.Empty;
             try 
             {
-                var trabajos = new List<string>();
+                var trabajos = new List<TrabajoCrearDto>();
                 // 2. Agregar trabajos personalizados
                 foreach (var trabajo in TrabajosPersonalizados)
                 {
-                    var descripcion = string.IsNullOrWhiteSpace(trabajo.Descripcion)
-                        ? trabajo.Nombre
-                        : $"{trabajo.Nombre} ({trabajo.Descripcion})";
-                    trabajos.Add(trabajo.Nombre);
+                    trabajos.Add(new TrabajoCrearDto
+                    {
+                        Trabajo = trabajo.Trabajo,
+                        Indicaciones = string.IsNullOrWhiteSpace(trabajo.Indicaciones)
+                            ? null
+                            : trabajo.Indicaciones
+                    });
                 }
                 // Validar que haya al menos un trabajo
                 if (trabajos.Count == 0)
@@ -633,6 +641,7 @@ namespace CarslineApp.ViewModels
                 IsLoading = false;
             }
         }
+        // Agregar este método actualizado a tu CrearOrdenViewModel.cs (parte de gestión de órdenes)
 
         private async Task CrearOrdenReparacion()
         {
@@ -640,22 +649,30 @@ namespace CarslineApp.ViewModels
             ErrorMessage = string.Empty;
             try
             {
-                var trabajos = new List<string>();
+                var trabajos = new List<TrabajoCrearDto>();
 
-                // 1. Agregar reparaciones frecuentes seleccionadas
+                // 1. Agregar reparaciones frecuentes seleccionadas con indicaciones
                 var serviciosSeleccionados = ServiciosExtra.Where(s => s.Seleccionado).ToList();
                 foreach (var servicio in serviciosSeleccionados)
                 {
-                    trabajos.Add(servicio.Nombre);
+                    trabajos.Add(new TrabajoCrearDto
+                    {
+                        Trabajo = servicio.Nombre,
+                        // Usar indicaciones personalizadas si existen, si no, usar la descripción por defecto
+                        Indicaciones = servicio.IndicacionesFinales
+                    });
                 }
 
                 // 2. Agregar trabajos personalizados
                 foreach (var trabajo in TrabajosPersonalizados)
                 {
-                    var descripcion = string.IsNullOrWhiteSpace(trabajo.Descripcion)
-                        ? trabajo.Nombre
-                        : $"{trabajo.Nombre} ({trabajo.Descripcion})";
-                    trabajos.Add(trabajo.Nombre);
+                    trabajos.Add(new TrabajoCrearDto
+                    {
+                        Trabajo = trabajo.Trabajo,
+                        Indicaciones = string.IsNullOrWhiteSpace(trabajo.Indicaciones)
+                            ? null
+                            : trabajo.Indicaciones
+                    });
                 }
 
                 // Validar que haya al menos un trabajo
@@ -717,20 +734,30 @@ namespace CarslineApp.ViewModels
 
             try
             {
-                var trabajos = new List<string>();
+                var trabajos = new List<TrabajoCrearDto>();
 
                 // 1. Agregar el servicio principal
                 if (TipoServicioSeleccionado != null)
                 {
-                    trabajos.Add(TipoServicioSeleccionado.Nombre);
+                    trabajos.Add(new TrabajoCrearDto
+                    {
+                        Trabajo = TipoServicioSeleccionado.Nombre,
+                        Indicaciones = null
+                    });
                 }
 
-                // 2. Agregar servicios extra seleccionados
+                // 2. Agregar servicios extra seleccionados con indicaciones
                 var serviciosSeleccionados = ServiciosExtra.Where(s => s.Seleccionado).ToList();
                 foreach (var servicio in serviciosSeleccionados)
                 {
-                    trabajos.Add(servicio.Nombre);
+                    trabajos.Add(new TrabajoCrearDto
+                    {
+                        Trabajo = servicio.Nombre,
+                        // Usar indicaciones personalizadas si existen, si no, usar la descripción por defecto
+                        Indicaciones = servicio.IndicacionesFinales
+                    });
                 }
+
                 var request = new CrearOrdenConTrabajosRequest
                 {
                     TipoOrdenId = _tipoOrdenId,
@@ -769,8 +796,7 @@ namespace CarslineApp.ViewModels
             {
                 IsLoading = false;
             }
-        }
-
+        }   
         public void CalcularCostoTotal()
         {
             decimal total = 0;

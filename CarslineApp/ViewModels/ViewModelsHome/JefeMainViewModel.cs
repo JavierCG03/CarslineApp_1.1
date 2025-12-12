@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace CarslineApp.ViewModels.ViewModelsHome
 {
-    public class AsesorMainViewModel : INotifyPropertyChanged
+    public class JefeMainViewModel : INotifyPropertyChanged
     {
         private readonly ApiService _apiService;
         private int _tipoOrdenSeleccionado = 1;
@@ -20,7 +20,7 @@ namespace CarslineApp.ViewModels.ViewModelsHome
         private ObservableCollection<OrdenDetalladaDto> _ordenesProceso = new();
         private ObservableCollection<OrdenDetalladaDto> _ordenesFinalizadas = new();
 
-        public AsesorMainViewModel()
+        public JefeMainViewModel()
         {
             _apiService = new ApiService();
 
@@ -31,10 +31,8 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             VerGarantiaCommand = new Command(() => CambiarTipoOrden(4));
 
             // Comandos de acciones
-            CrearOrdenCommand = new Command(async () => await OnCrearOrden());
+           
             RefreshCommand = new Command(async () => await CargarOrdenes());
-            CancelarOrdenCommand = new Command<int>(async (ordenId) => await CancelarOrden(ordenId));
-            EntregarOrdenCommand = new Command<int>(async (ordenId) => await EntregarOrden(ordenId));
             LogoutCommand = new Command(async () => await OnLogout());
 
             // ✅ NUEVO: Comando para ver detalle de orden
@@ -127,8 +125,6 @@ namespace CarslineApp.ViewModels.ViewModelsHome
         public ICommand VerGarantiaCommand { get; }
         public ICommand CrearOrdenCommand { get; }
         public ICommand RefreshCommand { get; }
-        public ICommand CancelarOrdenCommand { get; }
-        public ICommand EntregarOrdenCommand { get; }
         public ICommand LogoutCommand { get; }
         public ICommand VerDetalleOrdenCommand { get; } // ✅ NUEVO
 
@@ -151,10 +147,8 @@ namespace CarslineApp.ViewModels.ViewModelsHome
 
             try
             {
-                int asesorId = Preferences.Get("user_id", 9);
-                System.Diagnostics.Debug.WriteLine($"🔄 Cargando órdenes - TipoOrden: {TipoOrdenSeleccionado}, AsesorId: {asesorId}");
 
-                var ordenes = await _apiService.ObtenerOrdenesPorTipoAsync(TipoOrdenSeleccionado, asesorId);
+                var ordenes = await _apiService.ObtenerOrdenesPorTipo_JefeAsync(TipoOrdenSeleccionado);
                 System.Diagnostics.Debug.WriteLine($"📦 Órdenes recibidas de API: {ordenes?.Count ?? 0}");
 
                 // Ejecutar en el hilo principal de UI
@@ -225,18 +219,6 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             OnPropertyChanged(nameof(HayFinalizadas));
         }
 
-        private async Task OnCrearOrden()
-        {
-            var crearOrdenPage = new CrearOrdenPage(TipoOrdenSeleccionado);
-            await Application.Current.MainPage.Navigation.PushAsync(crearOrdenPage);
-
-            // Recargar cuando regrese
-            crearOrdenPage.Disappearing += async (s, e) =>
-            {
-                System.Diagnostics.Debug.WriteLine("🔄 Recargando órdenes después de crear...");
-                await CargarOrdenes();
-            };
-        }
 
         /// <summary>
         /// ✅ NUEVO: Ver detalle completo de una orden con sus trabajos
@@ -274,9 +256,9 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                         1 => "⏳", // Pendiente
                         2 => "🛠️", // Asignado
                         3 => "🔨", // En Proceso
-                        4=> "✅", // Completado
-                        5=> "⏸️", // Pausado
-                        6=> "❌", // Cancelado
+                        4 => "✅", // Completado
+                        5 => "⏸️", // Pausado
+                        6 => "❌", // Cancelado
                         _ => "📌"
                     };
 
@@ -308,132 +290,6 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                 IsLoading = false;
             }
         }
-
-        private async Task CancelarOrden(int ordenId)
-        {
-            bool confirm = await Application.Current.MainPage.DisplayAlert(
-                "Cancelar Orden",
-                "¿Estás seguro que deseas cancelar esta orden?\n\n" +
-                "⚠️ Esto cancelará todos los trabajos pendientes.",
-                "Sí",
-                "No");
-
-            if (!confirm) return;
-
-            IsLoading = true;
-
-            try
-            {
-                var response = await _apiService.CancelarOrdenAsync(ordenId);
-
-                if (response.Success)
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Éxito",
-                        "Orden cancelada correctamente",
-                        "OK");
-
-                    await CargarOrdenes();
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Error",
-                        response.Message,
-                        "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert(
-                    "Error",
-                    $"Error al cancelar orden: {ex.Message}",
-                    "OK");
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        private async Task EntregarOrden(int ordenId)
-        {
-            // ✅ VALIDACIÓN: Verificar que todos los trabajos estén completados
-            try
-            {
-                IsLoading = true;
-
-                // Obtener detalle de la orden para verificar trabajos
-                var ordenCompleta = await _apiService.ObtenerOrdenCompletaAsync(ordenId);
-
-                if (ordenCompleta == null)
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Error",
-                        "No se pudo verificar el estado de la orden",
-                        "OK");
-                    return;
-                }
-
-                // Verificar si hay trabajos sin completar
-                var trabajosPendientes = ordenCompleta.Trabajos.Count(t => t.EstadoTrabajo != 3);
-
-                if (trabajosPendientes > 0)
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "⚠️ No se puede entregar",
-                        $"Hay {trabajosPendientes} trabajo(s) sin completar.\n\n" +
-                        $"Progreso actual: {ordenCompleta.ProgresoFormateado}\n\n" +
-                        "Todos los trabajos deben estar completados antes de entregar el vehículo.",
-                        "OK");
-                    return;
-                }
-
-                bool confirm = await Application.Current.MainPage.DisplayAlert(
-                    "Entregar Vehículo",
-                    $"✅ Todos los trabajos están completados.\n\n" +
-                    $"¿Confirmas que el cliente recogió su vehículo?\n\n" +
-                    $"Orden: {ordenCompleta.NumeroOrden}\n" +
-                    $"Cliente: {ordenCompleta.ClienteNombre}\n" +
-                    $"Vehículo: {ordenCompleta.VehiculoCompleto}",
-                    "Sí, entregar",
-                    "Cancelar");
-
-                if (!confirm) return;
-
-                var response = await _apiService.EntregarOrdenAsync(ordenId);
-
-                if (response.Success)
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "✅ Éxito",
-                        "Vehículo entregado correctamente.\n" +
-                        "Se ha registrado en el historial.",
-                        "OK");
-
-                    await CargarOrdenes();
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Error",
-                        response.Message,
-                        "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert(
-                    "Error",
-                    $"Error al entregar orden: {ex.Message}",
-                    "OK");
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
         private async Task OnLogout()
         {
             bool confirm = await Application.Current.MainPage.DisplayAlert(
@@ -462,4 +318,5 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
 }

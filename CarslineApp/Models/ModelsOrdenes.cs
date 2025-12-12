@@ -1,4 +1,8 @@
-﻿namespace CarslineApp.Models
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+
+namespace CarslineApp.Models
 {
     // ============================================
     // ✅ MODELOS DE ÓRDENES - ACTUALIZADOS
@@ -98,7 +102,7 @@
         public int KilometrajeActual { get; set; }
         public DateTime FechaHoraPromesaEntrega { get; set; }
         public string? ObservacionesAsesor { get; set; }
-        public List<string> Trabajos { get; set; } = new();
+        public List<TrabajoCrearDto> Trabajos { get; set; } = new();
     }
 
     /// <summary>
@@ -126,17 +130,57 @@
         public decimal Precio { get; set; }
         public string PrecioFormateado => $"${Precio:N2}";
     }
-
-    public class ServicioExtraDto
+    public class ServicioExtraDto : INotifyPropertyChanged
     {
+        private bool _seleccionado;
+        private string _indicacionesPersonalizadas = string.Empty;
+
         public int Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+        public string Categoria { get; set; }
         public decimal Precio { get; set; }
-        public string Categoria { get; set; } = string.Empty;
-        public bool Seleccionado { get; set; }
         public string PrecioFormateado => $"${Precio:N2}";
+
+        public bool Seleccionado
+        {
+            get => _seleccionado;
+            set
+            {
+                _seleccionado = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(MostrarIndicaciones));
+            }
+        }
+
+        // Nueva propiedad para indicaciones personalizadas del asesor
+        public string IndicacionesPersonalizadas
+        {
+            get => _indicacionesPersonalizadas;
+            set
+            {
+                _indicacionesPersonalizadas = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Propiedad para controlar la visibilidad del campo de indicaciones
+        public bool MostrarIndicaciones => Seleccionado;
+
+        // Propiedad que retorna las indicaciones finales (personalizadas o descripción por defecto)
+        public string IndicacionesFinales =>
+            string.IsNullOrWhiteSpace(IndicacionesPersonalizadas)
+                ? Descripcion
+                : IndicacionesPersonalizadas;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
+
     public class TrabajoDto
     {
         public int Id { get; set; }
@@ -148,7 +192,7 @@
         public DateTime? FechaHoraInicio { get; set; }
         public DateTime? FechaHoraTermino { get; set; }
         public string? DuracionFormateada { get; set; }
-        public string? IncidenciasServicio { get; set; }
+        public string? IndicacionesServicio { get; set; }
         public string? ComentariosTecnico { get; set; }
         public string? ComentariosJefeTaller { get; set; }
         public int EstadoTrabajo { get; set; }
@@ -175,10 +219,11 @@
         };
 
     }
-    public class TrabajoPersonalizado
+    public class TrabajoCrearDto
     {
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
+        [Required]
+        public string Trabajo { get; set; } = string.Empty;
 
+        public string? Indicaciones { get; set; }
     }
 }

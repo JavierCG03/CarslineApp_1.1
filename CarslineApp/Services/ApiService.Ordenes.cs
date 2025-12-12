@@ -95,6 +95,51 @@ namespace CarslineApp.Services
             }
         }
 
+        public async Task<List<OrdenDetalladaDto>> ObtenerOrdenesPorTipo_JefeAsync(int tipoOrdenId)
+        {
+            try
+            {
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/Ordenes/Jefe-Taller/{tipoOrdenId}");
+
+                var response = await _httpClient.SendAsync(httpRequest);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // El API ahora retorna OrdenConTrabajosDto[], lo convertimos a OrdenDetalladaDto[]
+                    var ordenesCompletas = await response.Content.ReadFromJsonAsync<List<OrdenConTrabajosDto>>();
+
+                    if (ordenesCompletas == null) return new List<OrdenDetalladaDto>();
+
+                    // Mapear a OrdenDetalladaDto (simplificado para dashboard)
+                    var ordenes = ordenesCompletas.Select(o => new OrdenDetalladaDto
+                    {
+                        Id = o.Id,
+                        NumeroOrden = o.NumeroOrden,
+                        VehiculoCompleto = o.VehiculoCompleto,
+                        ClienteNombre = o.ClienteNombre,
+                        ClienteTelefono = o.ClienteTelefono,
+                        HoraPromesa = o.FechaHoraPromesaEntrega.ToString("HH:mm"),
+                        HoraInicio = "-", // Se puede calcular del primer trabajo
+                        HoraFin = "-", // Se puede calcular del último trabajo
+                        NombreTecnico = o.Trabajos.FirstOrDefault(t => t.TecnicoNombre != null)?.TecnicoNombre ?? "-",
+                        CostoTotal = o.CostoTotal,
+                        EstadoId = o.EstadoOrdenId,
+                        TotalTrabajos = o.TotalTrabajos,
+                        TrabajosCompletados = o.TrabajosCompletados,
+                        ProgresoGeneral = o.ProgresoGeneral
+                    }).ToList();
+
+                    return ordenes;
+                }
+                return new List<OrdenDetalladaDto>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al obtener órdenes: {ex.Message}");
+                return new List<OrdenDetalladaDto>();
+            }
+        }
+
         /// <summary>
         /// ✅ NUEVO: Obtener orden completa con todos sus trabajos
         /// </summary>
