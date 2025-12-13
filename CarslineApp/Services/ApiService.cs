@@ -5,8 +5,8 @@ namespace CarslineApp.Services
     {
         private readonly HttpClient _httpClient;
         //private const string BaseUrl = "http://10.22.16.32:5293/api"; //hotspot celular
-        //private const string BaseUrl = "http://192.168.1.71:5293/api"; //Url para conecion Wifi casa
-        private const string BaseUrl = "http://192.168.3.95:5293/api"; // Url_ Oficina CARSLINE
+        private const string BaseUrl = "http://192.168.1.67:5293/api"; //Url para conecion Wifi casa
+        //private const string BaseUrl = "http://192.168.3.95:5293/api"; // Url_ Oficina CARSLINE
 
         public ApiService()
         {

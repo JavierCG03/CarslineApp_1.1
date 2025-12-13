@@ -659,7 +659,7 @@ namespace CarslineApp.ViewModels
                     {
                         Trabajo = servicio.Nombre,
                         // Usar indicaciones personalizadas si existen, si no, usar la descripción por defecto
-                        Indicaciones = servicio.IndicacionesFinales
+                        Indicaciones = servicio.IndicacionesPersonalizadas
                     });
                 }
 
@@ -754,7 +754,7 @@ namespace CarslineApp.ViewModels
                     {
                         Trabajo = servicio.Nombre,
                         // Usar indicaciones personalizadas si existen, si no, usar la descripción por defecto
-                        Indicaciones = servicio.IndicacionesFinales
+                        Indicaciones = servicio.IndicacionesPersonalizadas
                     });
                 }
 

@@ -19,6 +19,7 @@ namespace CarslineApp.Models
         public string ClienteNombre { get; set; } = string.Empty;
         public string ClienteTelefono { get; set; } = string.Empty;
         public string HoraPromesa { get; set; } = string.Empty;
+        public string FechaPromesa { get; set; } = string.Empty;
         public string HoraInicio { get; set; } = string.Empty;
         public string HoraFin { get; set; } = string.Empty;
         public string NombreTecnico { get; set; } = string.Empty;
@@ -32,6 +33,8 @@ namespace CarslineApp.Models
         public decimal ProgresoGeneral { get; set; }
 
         // Propiedades calculadas
+        public bool EsServicio => TipoServicio != "Sin Servicio";
+        public bool NoEsServicio => !EsServicio;
         public bool EsPendiente => EstadoId == 1;
         public bool EsProceso => EstadoId == 2;
         public bool EsFinalizada => EstadoId == 3;
@@ -40,6 +43,14 @@ namespace CarslineApp.Models
         public string ProgresoTexto => $"{TrabajosCompletados}/{TotalTrabajos}";
         public string ProgresoFormateado => $"{ProgresoGeneral:F1}%";
         public bool TieneTrabajos => TotalTrabajos > 0;
+        public double ProgressBar
+        {
+            get
+            {
+                if (TotalTrabajos == 0 || TrabajosCompletados==0) return 0;
+                return (double)TrabajosCompletados / (double)TotalTrabajos;
+            }
+        }
 
         // Color de progreso
         public Color ColorProgreso
@@ -64,6 +75,7 @@ namespace CarslineApp.Models
         public string TipoOrden { get; set; } = string.Empty;
         public string ClienteNombre { get; set; } = string.Empty;
         public string ClienteTelefono { get; set; } = string.Empty;
+        public string TipoServicio { get; set; } = string.Empty;
         public string VehiculoCompleto { get; set; } = string.Empty;
         public string VIN { get; set; } = string.Empty;
         public string Placas { get; set; } = string.Empty;
@@ -166,12 +178,6 @@ namespace CarslineApp.Models
 
         // Propiedad para controlar la visibilidad del campo de indicaciones
         public bool MostrarIndicaciones => Seleccionado;
-
-        // Propiedad que retorna las indicaciones finales (personalizadas o descripción por defecto)
-        public string IndicacionesFinales =>
-            string.IsNullOrWhiteSpace(IndicacionesPersonalizadas)
-                ? Descripcion
-                : IndicacionesPersonalizadas;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
