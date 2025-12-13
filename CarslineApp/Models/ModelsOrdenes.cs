@@ -206,12 +206,27 @@ namespace CarslineApp.Models
         public string? ColorEstado { get; set; }
         public DateTime FechaCreacion { get; set; }
 
-        // Propiedades calculadas
+        // Propiedades calculadas de estado
         public bool EsPendiente => EstadoTrabajo == 1;
-        public bool EnProceso => EstadoTrabajo == 2;
-        public bool EstaCompletado => EstadoTrabajo == 3;
-        public bool EstaPausado => EstadoTrabajo == 4;
-        public bool EstaCancelado => EstadoTrabajo == 5;
+        public bool EnProceso => EstadoTrabajo == 3;
+        public bool EstaCompletado => EstadoTrabajo == 4;
+        public bool EstaPausado => EstadoTrabajo == 5;
+        public bool EstaCancelado => EstadoTrabajo == 6;
+
+        // ✅ NUEVAS PROPIEDADES para asignación de técnicos
+        public bool TieneTecnicoAsignado => TecnicoAsignadoId.HasValue && TecnicoAsignadoId > 0;
+        public bool NoTieneTecnicoAsignado => !TieneTecnicoAsignado;
+
+        // Solo se puede reasignar si tiene técnico Y no está en proceso
+        public bool PuedeReasignar => TieneTecnicoAsignado && !EnProceso && !EstaCompletado && !EstaCancelado;
+
+        // Solo se puede asignar si NO tiene técnico Y está pendiente
+        public bool PuedeAsignar => NoTieneTecnicoAsignado;
+
+        // Texto para mostrar estado de técnico
+        public string TextoTecnico => TieneTecnicoAsignado
+            ? $"👨‍🔧 {TecnicoNombre}"
+            : "Sin técnico asignado";
 
         // Color visual según estado
         public Color ColorVisualEstado => EstadoTrabajo switch
@@ -223,7 +238,6 @@ namespace CarslineApp.Models
             5 => Color.FromArgb("#F44336"), // Cancelado - Rojo
             _ => Colors.Gray
         };
-
     }
     public class TrabajoCrearDto
     {

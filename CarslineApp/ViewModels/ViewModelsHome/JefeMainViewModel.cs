@@ -1,5 +1,4 @@
-﻿
-using CarslineApp.Models;
+﻿using CarslineApp.Models;
 using CarslineApp.Services;
 using CarslineApp.Views;
 using System.Collections.ObjectModel;
@@ -16,9 +15,9 @@ namespace CarslineApp.ViewModels.ViewModelsHome
         private bool _isLoading;
         private string _nombreUsuarioActual = string.Empty;
 
-        private ObservableCollection<OrdenDetalladaDto> _ordenesPendientes = new();
-        private ObservableCollection<OrdenDetalladaDto> _ordenesProceso = new();
-        private ObservableCollection<OrdenDetalladaDto> _ordenesFinalizadas = new();
+        private ObservableCollection<OrdenConTrabajosDto> _ordenesPendientes = new();
+        private ObservableCollection<OrdenConTrabajosDto> _ordenesProceso = new();
+        private ObservableCollection<OrdenConTrabajosDto> _ordenesFinalizadas = new();
 
         public JefeMainViewModel()
         {
@@ -31,20 +30,17 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             VerGarantiaCommand = new Command(() => CambiarTipoOrden(4));
 
             // Comandos de acciones
-           
             RefreshCommand = new Command(async () => await CargarOrdenes());
             LogoutCommand = new Command(async () => await OnLogout());
 
-            // ✅ NUEVO: Comando para ver detalle de orden
-            VerDetalleOrdenCommand = new Command<int>(async (ordenId) => await VerDetalleOrden(ordenId));
+            // Comandos para técnicos
+            AsignarTecnicoCommand = new Command<TrabajoDto>(async (trabajo) => await AsignarTecnico(trabajo));
+            ReasignarTecnicoCommand = new Command<TrabajoDto>(async (trabajo) => await ReasignarTecnico(trabajo));
 
             // Solo cargar nombre de usuario aquí
-            NombreUsuarioActual = Preferences.Get("user_name", "Asesor");
+            NombreUsuarioActual = Preferences.Get("user_name", "Jefe de Taller");
         }
 
-        /// <summary>
-        /// Método público para inicializar desde la vista
-        /// </summary>
         public async Task InicializarAsync()
         {
             await CargarOrdenes();
@@ -93,19 +89,19 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             set { _isLoading = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<OrdenDetalladaDto> OrdenesPendientes
+        public ObservableCollection<OrdenConTrabajosDto> OrdenesPendientes
         {
             get => _ordenesPendientes;
             set { _ordenesPendientes = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<OrdenDetalladaDto> OrdenesProceso
+        public ObservableCollection<OrdenConTrabajosDto> OrdenesProceso
         {
             get => _ordenesProceso;
             set { _ordenesProceso = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<OrdenDetalladaDto> OrdenesFinalizadas
+        public ObservableCollection<OrdenConTrabajosDto> OrdenesFinalizadas
         {
             get => _ordenesFinalizadas;
             set { _ordenesFinalizadas = value; OnPropertyChanged(); }
@@ -123,10 +119,10 @@ namespace CarslineApp.ViewModels.ViewModelsHome
         public ICommand VerDiagnosticoCommand { get; }
         public ICommand VerReparacionCommand { get; }
         public ICommand VerGarantiaCommand { get; }
-        public ICommand CrearOrdenCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand LogoutCommand { get; }
-        public ICommand VerDetalleOrdenCommand { get; } // ✅ NUEVO
+        public ICommand AsignarTecnicoCommand { get; }
+        public ICommand ReasignarTecnicoCommand { get; }
 
         #endregion
 
@@ -138,63 +134,70 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             await CargarOrdenes();
         }
 
-        /// <summary>
-        /// ✅ ACTUALIZADO: Ahora trabaja con el nuevo modelo que incluye trabajos
-        /// </summary>
         private async Task CargarOrdenes()
         {
             IsLoading = true;
 
             try
             {
+                // Primero obtenemos las órdenes básicas
+                var ordenesList = await _apiService.ObtenerOrdenesPorTipo_JefeAsync(TipoOrdenSeleccionado);
+                System.Diagnostics.Debug.WriteLine($"📦 Órdenes recibidas: {ordenesList?.Count ?? 0}");
 
-                var ordenes = await _apiService.ObtenerOrdenesPorTipo_JefeAsync(TipoOrdenSeleccionado);
-                System.Diagnostics.Debug.WriteLine($"📦 Órdenes recibidas de API: {ordenes?.Count ?? 0}");
+                if (ordenesList == null || !ordenesList.Any())
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        OrdenesPendientes.Clear();
+                        OrdenesProceso.Clear();
+                        OrdenesFinalizadas.Clear();
+                        NotificarCambiosDashboards();
+                    });
+                    return;
+                }
 
-                // Ejecutar en el hilo principal de UI
+                // Ahora obtenemos el detalle completo con trabajos para cada orden
+                var ordenesPendientes = new List<OrdenConTrabajosDto>();
+                var ordenesProceso = new List<OrdenConTrabajosDto>();
+                var ordenesFinalizadas = new List<OrdenConTrabajosDto>();
+
+                foreach (var ordenBasica in ordenesList)
+                {
+                    // Obtener detalle completo con trabajos
+                    var ordenCompleta = await _apiService.ObtenerOrdenCompletaAsync(ordenBasica.Id);
+
+                    if (ordenCompleta != null)
+                    {
+                        if (ordenCompleta.EstadoOrdenId == 1)
+                            ordenesPendientes.Add(ordenCompleta);
+                        else if (ordenCompleta.EstadoOrdenId == 2)
+                            ordenesProceso.Add(ordenCompleta);
+                        else if (ordenCompleta.EstadoOrdenId == 3)
+                            ordenesFinalizadas.Add(ordenCompleta);
+                    }
+                }
+
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    // Limpiar colecciones
                     OrdenesPendientes.Clear();
                     OrdenesProceso.Clear();
                     OrdenesFinalizadas.Clear();
 
-                    // Clasificar y agregar
-                    if (ordenes != null && ordenes.Any())
-                    {
-                        foreach (var orden in ordenes)
-                        {
-                            System.Diagnostics.Debug.WriteLine(
-                                $"  📋 Orden {orden.NumeroOrden} - EstadoId: {orden.EstadoId} - " +
-                                $"Trabajos: {orden.TrabajosCompletados}/{orden.TotalTrabajos} ({orden.ProgresoGeneral:F1}%)");
+                    foreach (var orden in ordenesPendientes)
+                        OrdenesPendientes.Add(orden);
 
-                            if (orden.EsPendiente)
-                            {
-                                OrdenesPendientes.Add(orden);
-                                System.Diagnostics.Debug.WriteLine($"    ➡️ Agregada a PENDIENTES");
-                            }
-                            else if (orden.EsProceso)
-                            {
-                                OrdenesProceso.Add(orden);
-                                System.Diagnostics.Debug.WriteLine($"    ➡️ Agregada a PROCESO");
-                            }
-                            else if (orden.EsFinalizada)
-                            {
-                                OrdenesFinalizadas.Add(orden);
-                                System.Diagnostics.Debug.WriteLine($"    ➡️ Agregada a FINALIZADAS");
-                            }
-                        }
-                    }
+                    foreach (var orden in ordenesProceso)
+                        OrdenesProceso.Add(orden);
 
-                    // Notificar cambios
+                    foreach (var orden in ordenesFinalizadas)
+                        OrdenesFinalizadas.Add(orden);
+
                     NotificarCambiosDashboards();
                 });
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ ERROR al cargar órdenes: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"   Stack: {ex.StackTrace}");
-
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR: {ex.Message}");
                 await Application.Current.MainPage.DisplayAlert(
                     "Error",
                     $"Error al cargar órdenes: {ex.Message}",
@@ -208,81 +211,87 @@ namespace CarslineApp.ViewModels.ViewModelsHome
 
         private void NotificarCambiosDashboards()
         {
-            // Notificar las colecciones principales
             OnPropertyChanged(nameof(OrdenesPendientes));
             OnPropertyChanged(nameof(OrdenesProceso));
             OnPropertyChanged(nameof(OrdenesFinalizadas));
-
-            // Notificar los indicadores booleanos
             OnPropertyChanged(nameof(HayPendientes));
             OnPropertyChanged(nameof(HayProceso));
             OnPropertyChanged(nameof(HayFinalizadas));
         }
 
-
         /// <summary>
-        /// ✅ NUEVO: Ver detalle completo de una orden con sus trabajos
+        /// Asignar técnico a un trabajo sin técnico asignado
         /// </summary>
-        private async Task VerDetalleOrden(int ordenId)
+        private async Task AsignarTecnico(TrabajoDto trabajo)
         {
             try
             {
                 IsLoading = true;
 
-                // Obtener orden completa con trabajos
-                var ordenCompleta = await _apiService.ObtenerOrdenCompletaAsync(ordenId);
+                // Obtener lista de técnicos
+                var tecnicos = await _apiService.ObtenerTecnicosAsync();
 
-                if (ordenCompleta == null)
+                if (tecnicos == null || !tecnicos.Any())
                 {
                     await Application.Current.MainPage.DisplayAlert(
-                        "Error",
-                        "No se pudo cargar el detalle de la orden",
+                        "Sin técnicos",
+                        "No hay técnicos disponibles para asignar",
                         "OK");
                     return;
                 }
 
-                // Crear mensaje con detalles
-                var mensaje = $"📦 {ordenCompleta.NumeroOrden}\n\n" +
-                             $"Cliente: {ordenCompleta.ClienteNombre}\n" +
-                             $"Vehículo: {ordenCompleta.VehiculoCompleto}\n" +
-                             $"VIN: {ordenCompleta.VIN}\n\n" +
-                             $"📊 Progreso: {ordenCompleta.ProgresoTexto} ({ordenCompleta.ProgresoFormateado})\n\n" +
-                             $"🔧 TRABAJOS:\n";
+                // Crear lista de nombres para selección
+                var nombresTecnicos = tecnicos.Select(t => t.NombreCompleto).ToArray();
 
-                foreach (var trabajo in ordenCompleta.Trabajos)
+                string tecnicoSeleccionado = await Application.Current.MainPage.DisplayActionSheet(
+                    $"Asignar técnico a:\n{trabajo.Trabajo}",
+                    "Cancelar",
+                    null,
+                    nombresTecnicos);
+
+                if (string.IsNullOrEmpty(tecnicoSeleccionado) || tecnicoSeleccionado == "Cancelar")
+                    return;
+
+                // Obtener ID del técnico seleccionado
+                var tecnico = tecnicos.FirstOrDefault(t => t.NombreCompleto == tecnicoSeleccionado);
+                if (tecnico == null) return;
+
+                // Confirmar asignación
+                bool confirmar = await Application.Current.MainPage.DisplayAlert(
+                    "Confirmar asignación",
+                    $"¿Asignar a {tecnico.NombreCompleto}?\n\nTrabajo: {trabajo.Trabajo}",
+                    "Sí, asignar",
+                    "Cancelar");
+
+                if (!confirmar) return;
+
+                // Realizar asignación
+                int jefeId = Preferences.Get("user_id", 0);
+                var response = await _apiService.AsignarTecnicoAsync(trabajo.Id, tecnico.Id, jefeId);
+
+                if (response.Success)
                 {
-                    var icono = trabajo.EstadoTrabajo switch
-                    {
-                        1 => "⏳", // Pendiente
-                        2 => "🛠️", // Asignado
-                        3 => "🔨", // En Proceso
-                        4 => "✅", // Completado
-                        5 => "⏸️", // Pausado
-                        6 => "❌", // Cancelado
-                        _ => "📌"
-                    };
+                    await Application.Current.MainPage.DisplayAlert(
+                        "✅ Éxito",
+                        $"Trabajo asignado a {tecnico.NombreCompleto}",
+                        "OK");
 
-                    mensaje += $"\n{icono} {trabajo.Trabajo}";
-
-                    if (!string.IsNullOrEmpty(trabajo.TecnicoNombre))
-                        mensaje += $"\n   👨‍🔧 {trabajo.TecnicoNombre}";
-
-                    if (!string.IsNullOrEmpty(trabajo.DuracionFormateada) && trabajo.DuracionFormateada != "-")
-                        mensaje += $"\n   ⏱️ {trabajo.DuracionFormateada}";
-
-                    mensaje += "\n";
+                    // Recargar órdenes
+                    await CargarOrdenes();
                 }
-
-                await Application.Current.MainPage.DisplayAlert(
-                    "Detalle de Orden",
-                    mensaje,
-                    "OK");
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        response.Message,
+                        "OK");
+                }
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert(
                     "Error",
-                    $"Error al cargar detalle: {ex.Message}",
+                    $"Error al asignar técnico: {ex.Message}",
                     "OK");
             }
             finally
@@ -290,6 +299,107 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                 IsLoading = false;
             }
         }
+
+        /// <summary>
+        /// Reasignar técnico a un trabajo que ya tiene técnico asignado
+        /// </summary>
+        private async Task ReasignarTecnico(TrabajoDto trabajo)
+        {
+            try
+            {
+                // Verificar que el trabajo no esté en proceso
+                if (trabajo.EnProceso)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "No disponible",
+                        "No se puede reasignar un trabajo que ya está en proceso",
+                        "OK");
+                    return;
+                }
+
+                IsLoading = true;
+
+                // Obtener lista de técnicos
+                var tecnicos = await _apiService.ObtenerTecnicosAsync();
+
+                if (tecnicos == null || !tecnicos.Any())
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Sin técnicos",
+                        "No hay técnicos disponibles",
+                        "OK");
+                    return;
+                }
+
+                // Filtrar al técnico actual
+                var tecnicosDisponibles = tecnicos
+                    .Where(t => t.Id != trabajo.TecnicoAsignadoId)
+                    .ToList();
+
+                if (!tecnicosDisponibles.Any())
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Sin opciones",
+                        "No hay otros técnicos disponibles para reasignar",
+                        "OK");
+                    return;
+                }
+
+                var nombresTecnicos = tecnicosDisponibles.Select(t => t.NombreCompleto).ToArray();
+
+                string nuevoTecnico = await Application.Current.MainPage.DisplayActionSheet(
+                    $"Reasignar trabajo:\n{trabajo.Trabajo}\n\nTécnico actual: {trabajo.TecnicoNombre}",
+                    "Cancelar",
+                    null,
+                    nombresTecnicos);
+
+                if (string.IsNullOrEmpty(nuevoTecnico) || nuevoTecnico == "Cancelar")
+                    return;
+
+                var tecnico = tecnicosDisponibles.FirstOrDefault(t => t.NombreCompleto == nuevoTecnico);
+                if (tecnico == null) return;
+
+                bool confirmar = await Application.Current.MainPage.DisplayAlert(
+                    "Confirmar reasignación",
+                    $"Cambiar de:\n{trabajo.TecnicoNombre}\n\nA:\n{tecnico.NombreCompleto}\n\nTrabajo: {trabajo.Trabajo}",
+                    "Sí, reasignar",
+                    "Cancelar");
+
+                if (!confirmar) return;
+
+                int jefeId = Preferences.Get("user_id", 0);
+                var response = await _apiService.ReasignarTecnicoAsync(trabajo.Id, tecnico.Id, jefeId);
+
+                if (response.Success)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "✅ Éxito",
+                        $"Trabajo reasignado a {tecnico.NombreCompleto}",
+                        "OK");
+
+                    await CargarOrdenes();
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        response.Message,
+                        "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $"Error al reasignar: {ex.Message}",
+                    "OK");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
         private async Task OnLogout()
         {
             bool confirm = await Application.Current.MainPage.DisplayAlert(
@@ -303,7 +413,7 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                 Preferences.Clear();
                 Application.Current.MainPage = new NavigationPage(new LoginPage())
                 {
-                    BarBackgroundColor = Color.FromArgb("#512BD4"),
+                    BarBackgroundColor = Color.FromArgb("#D60000"),
                     BarTextColor = Colors.White
                 };
             }
@@ -318,5 +428,4 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

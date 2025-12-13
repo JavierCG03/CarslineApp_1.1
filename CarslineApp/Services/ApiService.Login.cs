@@ -147,6 +147,26 @@ namespace CarslineApp.Services
             }
         }
 
+        public async Task<List<UsuarioDto>> ObtenerTecnicosAsync()
+        {
+            try
+            {
+                // Obtener usuarios con rol de técnico (RolId = 5)
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Auth/Tecnicos");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<List<UsuarioDto>>();
+                    return result ?? new List<UsuarioDto>();
+                }
+                return new List<UsuarioDto>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al obtener técnicos: {ex.Message}");
+                return new List<UsuarioDto>();
+            }
+        }
 
     }
 
