@@ -75,7 +75,7 @@ namespace CarslineApp.Services
                         ClienteTelefono = o.ClienteTelefono,
                         TipoServicio= o.TipoServicio,
                         HoraPromesa = o.FechaHoraPromesaEntrega.ToString("h:mm tt"),
-                        FechaPromesa = o.FechaHoraPromesaEntrega.ToString("dddd/dd/MMMM"),
+                        FechaPromesa = o.FechaHoraPromesaEntrega.ToString("ddd/dd/MMM"),
                         HoraInicio = "-", // Se puede calcular del primer trabajo
                         HoraFin = "-", // Se puede calcular del último trabajo
                         NombreTecnico = o.Trabajos.FirstOrDefault(t => t.TecnicoNombre != null)?.TecnicoNombre ?? "-",
