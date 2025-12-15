@@ -198,7 +198,7 @@ namespace CarslineApp.Models
         public DateTime? FechaHoraInicio { get; set; }
         public DateTime? FechaHoraTermino { get; set; }
         public string? DuracionFormateada { get; set; }
-        public string? IndicacionesServicio { get; set; }
+        public string? IndicacionesTrabajo { get; set; }
         public string? ComentariosTecnico { get; set; }
         public string? ComentariosJefeTaller { get; set; }
         public int EstadoTrabajo { get; set; }
@@ -214,6 +214,7 @@ namespace CarslineApp.Models
         public bool EstaCancelado => EstadoTrabajo == 6;
 
         // ✅ NUEVAS PROPIEDADES para asignación de técnicos
+        public bool TieneIndicaciones => !string.IsNullOrWhiteSpace(IndicacionesTrabajo);
         public bool TieneTecnicoAsignado => TecnicoAsignadoId.HasValue && TecnicoAsignadoId > 0;
         public bool NoTieneTecnicoAsignado => !TieneTecnicoAsignado;
 
