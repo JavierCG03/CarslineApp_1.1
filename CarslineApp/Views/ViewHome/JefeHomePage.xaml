@@ -16,7 +16,6 @@
         <ContentPage Title="Menú" BackgroundColor="#1E1E1E">
             <ScrollView>
                 <VerticalStackLayout Padding="0" Spacing="0">
-
                     <!-- HEADER DEL MENÚ -->
                     <Frame BackgroundColor="#D60000" Padding="20,30,20,25" Margin="0" CornerRadius="0" HasShadow="False">
                         <VerticalStackLayout Spacing="8">
@@ -435,7 +434,6 @@
                                                                         </CollectionView>
                                                                     </VerticalStackLayout>
                                                                 </Frame>
-
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>
@@ -510,7 +508,7 @@
                                                                         </Label.FormattedText>
                                                                     </Label>
                                                                 </Frame>
-                                                                
+
                                                                 <!-- TRABAJOS -->
                                                                 <Frame BackgroundColor="#FFF5F5"
                                                                        Padding="12"
@@ -550,7 +548,6 @@
                                                                         </CollectionView>
                                                                     </VerticalStackLayout>
                                                                 </Frame>
-
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>
@@ -558,7 +555,6 @@
                                             </CollectionView>
                                         </VerticalStackLayout>
                                     </Frame>
-
                                 </VerticalStackLayout>
                             </ScrollView>
                         </RefreshView>
