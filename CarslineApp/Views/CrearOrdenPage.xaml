@@ -935,7 +935,6 @@
                     <!-- ========== VISTA PARA REPARACION========== -->
 
                     <VerticalStackLayout Spacing="15" IsVisible="{Binding EsReparacion}">
-                        <!-- ========== PARA REPARACIÓN - Reemplazar la sección de "Reparaciones Frecuentes" ========== -->
                         <BoxView HeightRequest="2" BackgroundColor="#E0E0E0" Margin="0,10"/>
                         <Label Text="Reparaciones Frecuentes"
                                HorizontalOptions="Center"
@@ -996,11 +995,12 @@
                                                             Stroke="#BDBDBD"
                                                             Padding="8"
                                                             StrokeShape="RoundRectangle 6">
-                                                        <Entry Text="{Binding IndicacionesPersonalizadas}"
+                                                        <Editor Text="{Binding IndicacionesPersonalizadas}"
                                                                Placeholder="Escribe indicaciones específicas aquí..."
                                                                FontSize="13"
                                                                TextColor="#404040"/>
                                                     </Border>
+                                                    
                                                 </VerticalStackLayout>
                                             </Frame>
 
@@ -1041,13 +1041,15 @@
                                        FontSize="12"
                                        TextColor="#757575"/>
                                 <Border BackgroundColor="White"
-                                        StrokeThickness=".7"
-                                        Stroke="#BDBDBD"
-                                        Padding="8"
-                                        StrokeShape="RoundRectangle 8">
-                                    <Entry Text="{Binding DescripcionTrabajoPersonalizado}"
-                                           Placeholder="Ej: Balatas delanteras originales"
-                                           FontSize="14"/>
+                                    StrokeThickness=".7"
+                                    Stroke="#BDBDBD"
+                                    Padding="8"
+                                    StrokeShape="RoundRectangle 8">
+                                    <Editor Text="{Binding DescripcionTrabajoPersonalizado}"
+                                        Placeholder="Ej: Balatas delanteras originales"
+                                        FontSize="14"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="120" />
                                 </Border>
 
                                 <Button Text="+ Agregar Trabajo"
@@ -1078,11 +1080,11 @@
                                            BorderColor="#E0E0E0">
                                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                             <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                                <Label Text="{Binding Nombre}"
+                                                <Label Text="{Binding Trabajo}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
                                                        TextColor="Black"/>
-                                                <Label Text="{Binding Descripcion}"
+                                                <Label Text="{Binding Indicaciones}"
                                                        FontSize="12"
                                                        TextColor="#757575"
                                                        IsVisible="{Binding Descripcion, Converter={StaticResource StringNotEmptyConverter}}"/>
@@ -1210,13 +1212,15 @@
                                        FontSize="12"
                                        TextColor="#757575"/>
                                 <Border BackgroundColor="White"
-                                        StrokeThickness=".7"
-                                        Stroke="#BDBDBD"
-                                        Padding="8"
-                                        StrokeShape="RoundRectangle 8">
-                                    <Entry Text="{Binding DescripcionTrabajoPersonalizado}"
-                                           Placeholder="Ej: El testigo se encendio despues de mi ultimo viaje... "
-                                           FontSize="14"/>
+                                    StrokeThickness=".7"
+                                    Stroke="#BDBDBD"
+                                    Padding="8"
+                                    StrokeShape="RoundRectangle 8">
+                                   <Editor Text="{Binding DescripcionTrabajoPersonalizado}"
+                                        Placeholder="Ej: El testigo se encendió después de mi último viaje..."
+                                        FontSize="14"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="120" />
                                 </Border>
 
                                 <Button Text="+ Agregar Diagnostico"
@@ -1247,11 +1251,11 @@
                                            BorderColor="#E0E0E0">
                                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                             <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                                <Label Text="{Binding Nombre}"
+                                                <Label Text="{Binding Trabajo}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
                                                        TextColor="Black"/>
-                                                <Label Text="{Binding Descripcion}"
+                                                <Label Text="{Binding Indicaciones}"
                                                        FontSize="12"
                                                        TextColor="#757575"
                                                        IsVisible="{Binding Descripcion, Converter={StaticResource StringNotEmptyConverter}}"/>
@@ -1553,7 +1557,7 @@
                                          Padding="8"
                                          StrokeShape="RoundRectangle 8">
                                      <Entry Text="{Binding NombreTrabajoPersonalizado}"
-                                            Placeholder="Ej: Cambio de balatas"
+                                            Placeholder="Ej: Reparacion de Transmision"
                                             FontSize="14"/>
                                  </Border>
 
@@ -1565,10 +1569,12 @@
                                          Stroke="#BDBDBD"
                                          Padding="8"
                                          StrokeShape="RoundRectangle 8">
-                                     <Entry Text="{Binding DescripcionTrabajoPersonalizado}"
-                                            Placeholder="Ej: Balatas delanteras originales"
-                                            FontSize="14"/>
-                                 </Border>
+                                    <Editor Text="{Binding DescripcionTrabajoPersonalizado}"
+                                        Placeholder="Ej: El vehiculo no permite hacer el cambio de velocidad..."
+                                        FontSize="14"
+                                        AutoSize="TextChanges"
+                                        HeightRequest="120" />
+                                </Border>
 
                                  <Button Text="+ Agregar Trabajo"
                                          Command="{Binding AgregarTrabajoPersonalizadoCommand}"
@@ -1598,11 +1604,11 @@
                                             BorderColor="#E0E0E0">
                                          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                              <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                                 <Label Text="{Binding Nombre}"
+                                                 <Label Text="{Binding Trabajo}"
                                                         FontSize="14"
                                                         FontAttributes="Bold"
                                                         TextColor="Black"/>
-                                                 <Label Text="{Binding Descripcion}"
+                                                 <Label Text="{Binding Indicaciones}"
                                                         FontSize="12"
                                                         TextColor="#757575"
                                                         IsVisible="{Binding Descripcion, Converter={StaticResource StringNotEmptyConverter}}"/>

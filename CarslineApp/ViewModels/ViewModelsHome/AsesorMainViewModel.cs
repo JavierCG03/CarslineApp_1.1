@@ -262,8 +262,10 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                 // Crear mensaje con detalles
                 var mensaje = $"📦 {ordenCompleta.NumeroOrden}\n\n" +
                              $"Cliente: {ordenCompleta.ClienteNombre}\n" +
+                             $"Telefono: {ordenCompleta.ClienteTelefono}\n" +
                              $"Vehículo: {ordenCompleta.VehiculoCompleto}\n" +
                              $"VIN: {ordenCompleta.VIN}\n\n" +
+                             $"Entrega: {ordenCompleta.FechaHoraPromesaEntrega}\n" +
                              $"📊 Progreso: {ordenCompleta.ProgresoTexto} ({ordenCompleta.ProgresoFormateado})\n\n" +
                              $"🔧 TRABAJOS:\n";
 
@@ -271,16 +273,16 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                 {
                     var icono = trabajo.EstadoTrabajo switch
                     {
-                        1 => "⏳", // Pendiente
-                        2 => "🛠️", // Asignado
-                        3 => "🔨", // En Proceso
+                        1 =>"⏳", // Pendiente
+                        2 =>"🛠️", // Asignado
+                        3 =>"🔨", // En Proceso
                         4=> "✅", // Completado
                         5=> "⏸️", // Pausado
                         6=> "❌", // Cancelado
                         _ => "📌"
                     };
 
-                    mensaje += $"\n{icono} {trabajo.Trabajo}";
+                    mensaje += $"\n{trabajo.Trabajo}    {icono}{trabajo.EstadoTrabajoNombre} ";
 
                     if (!string.IsNullOrEmpty(trabajo.TecnicoNombre))
                         mensaje += $"\n   👨‍🔧 {trabajo.TecnicoNombre}";
@@ -410,7 +412,6 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                         "Vehículo entregado correctamente.\n" +
                         "Se ha registrado en el historial.",
                         "OK");
-
                     await CargarOrdenes();
                 }
                 else

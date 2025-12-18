@@ -224,8 +224,6 @@
 
                                                             <VerticalStackLayout Spacing="12">
 
-
-
                                                                 <!-- ENCABEZADO: VEHÍCULO + NÚMERO ORDEN -->
                                                                 <Grid ColumnDefinitions="*,Auto">
                                                                     <Label Grid.Column="0"

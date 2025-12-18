@@ -95,6 +95,9 @@ namespace CarslineApp.Models
         public List<TrabajoDto> Trabajos { get; set; } = new();
 
         // Propiedades calculadas
+        public string Ultimos4VIN =>
+        VIN.Length >= 4 ? VIN.Substring(VIN.Length - 4) : VIN;
+
         public string ProgresoTexto => $"{TrabajosCompletados}/{TotalTrabajos}";
         public string ProgresoFormateado => $"{ProgresoGeneral:F1}%";
         public bool TieneTrabajosEnProceso => Trabajos.Any(t => t.EnProceso);
@@ -232,12 +235,13 @@ namespace CarslineApp.Models
         // Color visual según estado
         public Color ColorVisualEstado => EstadoTrabajo switch
         {
-            1 => Color.FromArgb("#FFA500"), // Pendiente - Naranja
-            2 => Color.FromArgb("#2196F3"), // En Proceso - Azul
-            3 => Color.FromArgb("#4CAF50"), // Completado - Verde
-            4 => Color.FromArgb("#FF9800"), // Pausado - Naranja oscuro
-            5 => Color.FromArgb("#F44336"), // Cancelado - Rojo
-            _ => Colors.Gray
+            1 => Color.FromArgb("#E53935"), // Pendiente - Rojo
+            2 => Color.FromArgb("#E53935"), // Pendiente - Rojo
+            3 => Color.FromArgb("#FDD835"), // En Proceso - Amarillo
+            4 => Color.FromArgb("#43A047"), // Completado - Verde
+            5 => Color.FromArgb("#FB8C00"), // Pausado - Naranja oscuro
+            6 => Color.FromArgb("#1A1A1A"), // Cancelado - Negro suavizado
+            _ => Colors.Gray // Default
         };
     }
     public class TrabajoCrearDto

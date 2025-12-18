@@ -13,10 +13,27 @@ namespace CarslineApp.ViewModels
         private bool _isLoading;
         private string _errorMessage = string.Empty;
         private ObservableCollection<RefaccionDto> _refacciones = new();
+        private ObservableCollection<RefaccionDto> _refaccionesFiltradas = new();
+        private string _textoBusqueda = string.Empty;
+        private string _filtroTipo = "Todos";
 
         // Tipos de refacción comunes
         public List<string> TiposRefaccion { get; } = new()
         {
+            "Filtro Aceite",
+            "Filtro Aire Cabina",
+            "Filtro Aire Motor",
+            "Balatas delanteras",
+            "Balatas traseras",
+            "Bujias",
+            "Amortiguadores",
+            "Otro"
+        };
+
+        // Lista de filtros por tipo (incluye "Todos")
+        public List<string> TiposFiltro { get; } = new()
+        {
+            "Todos",
             "Filtro Aceite",
             "Filtro Aire Cabina",
             "Filtro Aire Motor",
@@ -38,10 +55,11 @@ namespace CarslineApp.ViewModels
             DisminuirCommand = new Command<RefaccionDto>(async (r) => await DisminuirCantidad(r));
             EliminarCommand = new Command<RefaccionDto>(async (r) => await EliminarRefaccion(r));
             VolverCommand = new Command(async () => await OnVolver());
-            // ✅ NUEVO: Comando para exportar
             ExportarExcelCommand = new Command(async () => await ExportarExcel());
             AumentarUnoCommand = new Command<RefaccionDto>(async (r) => await AumentarUnoRapido(r));
             DisminuirUnoCommand = new Command<RefaccionDto>(async (r) => await DisminuirUnoRapido(r));
+            BuscarCommand = new Command(async () => await BuscarRefaccion());
+            LimpiarBusquedaCommand = new Command(() => LimpiarBusqueda());
         }
 
         #region Propiedades
@@ -73,11 +91,47 @@ namespace CarslineApp.ViewModels
             {
                 _refacciones = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(HayRefacciones)); // ✅ AGREGAR ESTA LÍNEA
+                AplicarFiltros();
             }
         }
 
-        public bool HayRefacciones => Refacciones.Any();
+        public ObservableCollection<RefaccionDto> RefaccionesFiltradas
+        {
+            get => _refaccionesFiltradas;
+            set
+            {
+                _refaccionesFiltradas = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HayRefacciones));
+                OnPropertyChanged(nameof(CantidadMostrada));
+            }
+        }
+
+        public string TextoBusqueda
+        {
+            get => _textoBusqueda;
+            set
+            {
+                _textoBusqueda = value;
+                OnPropertyChanged();
+                AplicarFiltros();
+            }
+        }
+
+        public string FiltroTipo
+        {
+            get => _filtroTipo;
+            set
+            {
+                _filtroTipo = value;
+                OnPropertyChanged();
+                AplicarFiltros();
+            }
+        }
+
+        public bool HayRefacciones => RefaccionesFiltradas?.Any() ?? false;
+
+        public string CantidadMostrada => RefaccionesFiltradas?.Count.ToString() ?? "0";
 
         #endregion
 
@@ -92,9 +146,98 @@ namespace CarslineApp.ViewModels
         public ICommand ExportarExcelCommand { get; }
         public ICommand AumentarUnoCommand { get; }
         public ICommand DisminuirUnoCommand { get; }
+        public ICommand BuscarCommand { get; }
+        public ICommand LimpiarBusquedaCommand { get; }
+
         #endregion
 
         #region Métodos
+
+        // ✅ NUEVO: Buscar refacción específica por número de parte
+        private async Task BuscarRefaccion()
+        {
+            if (string.IsNullOrWhiteSpace(TextoBusqueda))
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Búsqueda",
+                    "Ingresa un número de parte para buscar",
+                    "OK");
+                return;
+            }
+
+            IsLoading = true;
+
+            try
+            {
+                var refaccion = await _apiService.BuscarPorNumeroParteAsync(TextoBusqueda.Trim());
+
+                if (refaccion != null)
+                {
+                    // Mostrar solo la refacción encontrada
+                    RefaccionesFiltradas = new ObservableCollection<RefaccionDto> { refaccion };
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "No encontrado",
+                        $"No se encontró la refacción '{TextoBusqueda}'",
+                        "OK");
+
+                    // Recargar toda la lista
+                    await CargarRefacciones();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $"Error al buscar: {ex.Message}",
+                    "OK");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        // ✅ NUEVO: Limpiar búsqueda y mostrar todo
+        private void LimpiarBusqueda()
+        {
+            TextoBusqueda = string.Empty;
+            FiltroTipo = "Todos";
+            AplicarFiltros();
+        }
+
+        // ✅ NUEVO: Aplicar filtros de búsqueda y tipo
+        private void AplicarFiltros()
+        {
+            if (Refacciones == null || !Refacciones.Any())
+            {
+                RefaccionesFiltradas = new ObservableCollection<RefaccionDto>();
+                return;
+            }
+
+            var filtradas = Refacciones.AsEnumerable();
+
+            // Filtrar por tipo
+            if (FiltroTipo != "Todos")
+            {
+                filtradas = filtradas.Where(r => r.TipoRefaccion == FiltroTipo);
+            }
+
+            // Filtrar por texto de búsqueda
+            if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+            {
+                var busqueda = TextoBusqueda.ToLower();
+                filtradas = filtradas.Where(r =>
+                    r.NumeroParte.ToLower().Contains(busqueda) ||
+                    r.TipoRefaccion.ToLower().Contains(busqueda) ||
+                    (r.MarcaVehiculo?.ToLower().Contains(busqueda) ?? false) ||
+                    (r.Modelo?.ToLower().Contains(busqueda) ?? false));
+            }
+
+            RefaccionesFiltradas = new ObservableCollection<RefaccionDto>(filtradas);
+        }
         private async Task AumentarUnoRapido(RefaccionDto refaccion)
         {
             try
@@ -105,16 +248,25 @@ namespace CarslineApp.ViewModels
                 {
                     // Actualizar localmente
                     refaccion.Cantidad += 1;
-                    OnPropertyChanged(nameof(Refacciones));
-                    await CargarRefacciones();
+                    OnPropertyChanged(nameof(RefaccionesFiltradas));
 
+                    // Recargar datos del servidor
+                    await CargarRefacciones();
                 }
                 else
                 {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        response.Message,
+                        "OK");
                 }
             }
             catch (Exception ex)
             {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $"Error: {ex.Message}",
+                    "OK");
             }
         }
 
@@ -122,6 +274,10 @@ namespace CarslineApp.ViewModels
         {
             if (refaccion.Cantidad == 0)
             {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Advertencia",
+                    "No hay stock disponible",
+                    "OK");
                 return;
             }
 
@@ -133,17 +289,25 @@ namespace CarslineApp.ViewModels
                 {
                     // Actualizar localmente
                     refaccion.Cantidad -= 1;
-                    OnPropertyChanged(nameof(Refacciones));
-                    await CargarRefacciones();
+                    OnPropertyChanged(nameof(RefaccionesFiltradas));
 
-                    // Mensaje toast breve
+                    // Recargar datos del servidor
+                    await CargarRefacciones();
                 }
                 else
                 {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        response.Message,
+                        "OK");
                 }
             }
             catch (Exception ex)
             {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $"Error: {ex.Message}",
+                    "OK");
             }
         }
 
@@ -168,8 +332,8 @@ namespace CarslineApp.ViewModels
                 // Encabezados
                 csv.AppendLine("Número de Parte,Tipo,Marca,Modelo,Año,Cantidad,Fecha Registro,Última Modificación");
 
-                // Datos
-                foreach (var refaccion in Refacciones)
+                // Datos - usar RefaccionesFiltradas para exportar solo lo visible
+                foreach (var refaccion in RefaccionesFiltradas)
                 {
                     csv.AppendLine($"\"{refaccion.NumeroParte}\"," +
                                   $"\"{refaccion.TipoRefaccion}\"," +
@@ -211,6 +375,7 @@ namespace CarslineApp.ViewModels
                 IsLoading = false;
             }
         }
+
         public async Task InicializarAsync()
         {
             await CargarRefacciones();
@@ -228,7 +393,7 @@ namespace CarslineApp.ViewModels
 
                 System.Diagnostics.Debug.WriteLine($"📦 Refacciones recibidas: {refacciones?.Count ?? 0}");
 
-                // ✅ CAMBIO: Crear una NUEVA colección en lugar de Clear/Add
+                // Crear una NUEVA colección
                 var nuevaColeccion = new ObservableCollection<RefaccionDto>();
 
                 foreach (var refaccion in refacciones)
@@ -237,11 +402,11 @@ namespace CarslineApp.ViewModels
                     System.Diagnostics.Debug.WriteLine($"  ➡️ {refaccion.NumeroParte} - Stock: {refaccion.Cantidad}");
                 }
 
-                // ✅ Asignar la nueva colección (esto activa el setter)
+                // Asignar la nueva colección (esto activa el setter y los filtros)
                 Refacciones = nuevaColeccion;
 
                 System.Diagnostics.Debug.WriteLine($"✅ Total en colección: {Refacciones.Count}");
-                System.Diagnostics.Debug.WriteLine($"✅ HayRefacciones: {HayRefacciones}");
+                System.Diagnostics.Debug.WriteLine($"✅ Total filtradas: {RefaccionesFiltradas.Count}");
             }
             catch (Exception ex)
             {

@@ -129,7 +129,6 @@
                                     Padding="15,0"/>
                         </Frame>
                     </VerticalStackLayout>
-
                 </VerticalStackLayout>
             </ScrollView>
         </ContentPage>
@@ -220,6 +219,25 @@
                                                                     </Frame>
                                                                 </Grid>
                                                                 
+                                                                <Grid ColumnDefinitions="Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                           Text="VIN:"
+                                                                           FontSize="18"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="White"/>
+                                                                    <Frame Grid.Column="1"
+                                                                           BackgroundColor="#D60000"
+                                                                           Padding="8,4"
+                                                                           CornerRadius="6"
+                                                                           HasShadow="False"
+                                                                           HeightRequest="30">
+                                                                        <Label Text="{Binding VIN}"
+                                                                               FontSize="11"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="White"/>
+                                                                    </Frame>
+                                                                </Grid>
+
                                                                 <!-- TRABAJOS -->
                                                                 <Frame BackgroundColor="#FFF5F5"
                                                                        Padding="12"
@@ -248,7 +266,7 @@
                                                                                                    TextColor="Black"/>
 
                                                                                             <Label Text="{Binding IndicacionesTrabajo}"
-                                                                                                   FontSize="13"
+                                                                                                   FontSize="11"
                                                                                                    FontAttributes="Bold"
                                                                                                    TextColor="Gray"
                                                                                                    IsVisible="{Binding TieneIndicaciones}"/>
@@ -345,6 +363,26 @@
                                                                                TextColor="White"/>
                                                                     </Frame>
                                                                 </Grid>
+                                                                
+                                                                <Grid ColumnDefinitions="Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                           Text="VIN:"
+                                                                           FontSize="18"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#1A1A1A"/>
+                                                                    <Frame Grid.Column="1"
+                                                                           BackgroundColor="#FFA500"
+                                                                           Padding="8,4"
+                                                                           CornerRadius="6"
+                                                                           HasShadow="False"
+                                                                           HeightRequest="30">
+                                                                        <Label Text="{Binding VIN}"
+                                                                               FontSize="11"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="White"/>
+                                                                    </Frame>
+                                                                </Grid>
+                                                                
                                                                 <!-- PROGRESO -->
                                                                 <Frame BackgroundColor="#FFFBF5"
                                                                        Padding="12"
@@ -377,7 +415,6 @@
                                                                                      HeightRequest="12"/>
                                                                     </VerticalStackLayout>
                                                                 </Frame>
-
                                                                 <!-- TRABAJOS -->
                                                                 <Frame BackgroundColor="#FFF5F5"
                                                                        Padding="12"
@@ -412,7 +449,7 @@
                                                                                                      TextColor="{Binding ColorVisualEstado}"/>
                                                                                             </Grid>
                                                                                             <Label Text="{Binding IndicacionesTrabajo}"
-                                                                                                   FontSize="13"
+                                                                                                   FontSize="11"
                                                                                                    FontAttributes="Bold"
                                                                                                    TextColor="gray"
                                                                                                    IsVisible="{Binding TieneIndicaciones}"/>
@@ -507,7 +544,24 @@
                                                                                TextColor="White"/>
                                                                     </Frame>
                                                                 </Grid>
-
+                                                                <Grid ColumnDefinitions="Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                           Text="VIN:"
+                                                                           FontSize="18"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#1A1A1A"/>
+                                                                    <Frame Grid.Column="1"
+                                                                           BackgroundColor="#4CAF50"
+                                                                           Padding="8,4"
+                                                                           CornerRadius="6"
+                                                                           HasShadow="False"
+                                                                           HeightRequest="30">
+                                                                        <Label Text="{Binding VIN}"
+                                                                               FontSize="11"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="White"/>
+                                                                    </Frame>
+                                                                </Grid>
                                                                 <!-- PROGRESO COMPLETADO -->
                                                                 <Frame BackgroundColor="#F9FFF9"
                                                                        Padding="12"
@@ -561,7 +615,7 @@
                                                                                                      TextColor="{Binding ColorVisualEstado}"/>
                                                                                             </Grid>
                                                                                             <Label Text="{Binding IndicacionesTrabajo}"
-                                                                                                   FontSize="13"
+                                                                                                   FontSize="11"
                                                                                                    FontAttributes="Bold"
                                                                                                    TextColor="Gray"
                                                                                                    IsVisible="{Binding TieneIndicaciones}"/>

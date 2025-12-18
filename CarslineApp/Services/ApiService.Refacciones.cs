@@ -25,6 +25,27 @@ namespace CarslineApp.Services
             }
         }
 
+        // ✅ NUEVO: Buscar refacción por número de parte
+        public async Task<RefaccionDto?> BuscarPorNumeroParteAsync(string numeroParte)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Refacciones/buscar/{numeroParte}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<RefaccionDto>();
+                    return result;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al buscar refacción: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<RefaccionResponse> CrearRefaccionAsync(CrearRefaccionRequest request)
         {
             try
