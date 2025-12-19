@@ -9,7 +9,7 @@ namespace CarslineApp.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{BaseUrl}/Refacciones");
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Refacciones/paginado");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -18,6 +18,7 @@ namespace CarslineApp.Services
                 }
                 return new List<RefaccionDto>();
             }
+
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error al obtener refacciones: {ex.Message}");
