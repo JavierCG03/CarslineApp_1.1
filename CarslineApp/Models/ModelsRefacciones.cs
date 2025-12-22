@@ -35,7 +35,9 @@ namespace CarslineApp.Models
         {
             get
             {
-                return TipoRefaccion.ToLower() switch
+                var tipo = TipoRefaccion?.ToLower() ?? string.Empty;
+
+                return tipo switch
                 {
                     var t when t.Contains("balatas delanteras") => Color.FromArgb("#E74C3C"),
                     var t when t.Contains("balatas traseras") => Color.FromArgb("#C0392B"),
@@ -47,11 +49,14 @@ namespace CarslineApp.Models
             }
         }
 
+
         public string IconoTipo
         {
             get
             {
-                return TipoRefaccion.ToLower() switch
+                var tipo = TipoRefaccion?.ToLower() ?? string.Empty;
+
+                return tipo switch
                 {
                     var t when t.Contains("balatas") => "🔴",
                     var t when t.Contains("filtro aceite") => "🛢️",
@@ -60,6 +65,7 @@ namespace CarslineApp.Models
                 };
             }
         }
+
 
         public string TextoStock => $"Stock: {Cantidad}";
     }

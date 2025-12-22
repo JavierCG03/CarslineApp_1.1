@@ -1,5 +1,6 @@
 ﻿using CarslineApp.Models;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace CarslineApp.Services
 {
@@ -83,6 +84,38 @@ namespace CarslineApp.Services
             }
         }
 
+        public async Task<MisTrabajosResponseDto?> ObtenerMisTrabajosAsync(
+           int tecnicoId,
+           int? estadoFiltro = null)
+        {
+            try
+            {
+                var url = $"{BaseUrl}/Trabajos/mis-trabajos/{tecnicoId}";
+
+                // Agregar filtro si viene
+                if (estadoFiltro.HasValue)
+                    url += $"?estadoFiltro={estadoFiltro.Value}";
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                return JsonSerializer.Deserialize<MisTrabajosResponseDto>(
+                    json,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error ObtenerMisTrabajosAsync: {ex.Message}");
+                return null;
+            }
+        }
     }
 
 }

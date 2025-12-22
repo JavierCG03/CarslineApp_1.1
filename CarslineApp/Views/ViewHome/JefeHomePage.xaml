@@ -591,7 +591,6 @@
                                                                                FontSize="13"
                                                                                FontAttributes="Bold"
                                                                                TextColor="#4CAF50"/>
-
                                                                         <CollectionView ItemsSource="{Binding Trabajos}">
                                                                             <CollectionView.ItemTemplate>
                                                                                 <DataTemplate>

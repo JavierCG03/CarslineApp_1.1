@@ -230,8 +230,8 @@ namespace CarslineApp.ViewModels
             {
                 var busqueda = TextoBusqueda.ToLower();
                 filtradas = filtradas.Where(r =>
-                    r.NumeroParte.ToLower().Contains(busqueda) ||
-                    r.TipoRefaccion.ToLower().Contains(busqueda) ||
+                    (r.NumeroParte?.ToLower().Contains(busqueda) ?? false) ||
+                    (r.TipoRefaccion?.ToLower().Contains(busqueda) ?? false) ||
                     (r.MarcaVehiculo?.ToLower().Contains(busqueda) ?? false) ||
                     (r.Modelo?.ToLower().Contains(busqueda) ?? false));
             }
@@ -246,9 +246,6 @@ namespace CarslineApp.ViewModels
 
                 if (response.Success)
                 {
-                    // Actualizar localmente
-                    refaccion.Cantidad += 1;
-                    OnPropertyChanged(nameof(RefaccionesFiltradas));
 
                     // Recargar datos del servidor
                     await CargarRefacciones();
@@ -388,37 +385,34 @@ namespace CarslineApp.ViewModels
 
             try
             {
-                System.Diagnostics.Debug.WriteLine("🔍 Iniciando carga de refacciones...");
-                var refacciones = await _apiService.ObtenerRefaccionesAsync();
-
-                System.Diagnostics.Debug.WriteLine($"📦 Refacciones recibidas: {refacciones?.Count ?? 0}");
-
-                // Crear una NUEVA colección
-                var nuevaColeccion = new ObservableCollection<RefaccionDto>();
-
-                foreach (var refaccion in refacciones)
+                //var response = await _apiService.ObtenerRefaccionesAsync();
+                var refacciones = await _apiService.ObtenerTodasRefaccionesAsync();
+                Refacciones = new ObservableCollection<RefaccionDto>(refacciones);
+                /*
+                if (response == null || !response.Success)
                 {
-                    nuevaColeccion.Add(refaccion);
-                    System.Diagnostics.Debug.WriteLine($"  ➡️ {refaccion.NumeroParte} - Stock: {refaccion.Cantidad}");
+                    ErrorMessage = "No se pudieron cargar las refacciones";
+                    return;
                 }
 
-                // Asignar la nueva colección (esto activa el setter y los filtros)
-                Refacciones = nuevaColeccion;
-
-                System.Diagnostics.Debug.WriteLine($"✅ Total en colección: {Refacciones.Count}");
-                System.Diagnostics.Debug.WriteLine($"✅ Total filtradas: {RefaccionesFiltradas.Count}");
+                Refacciones = new ObservableCollection<RefaccionDto>(
+                    response.Refacciones
+                );*/
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ ERROR: {ex.Message}");
-                ErrorMessage = $"Error al cargar refacciones: {ex.Message}";
-                await Application.Current.MainPage.DisplayAlert("Error", ErrorMessage, "OK");
+                ErrorMessage = ex.Message;
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    ErrorMessage,
+                    "OK");
             }
             finally
             {
                 IsLoading = false;
             }
         }
+
 
         private async Task OnAgregarRefaccion()
         {

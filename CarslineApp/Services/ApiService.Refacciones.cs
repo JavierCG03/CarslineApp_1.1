@@ -1,28 +1,54 @@
 ﻿using CarslineApp.Models;
+using System.Diagnostics;
 using System.Net.Http.Json;
 
 namespace CarslineApp.Services
 {
     public partial class ApiService
     {
-        public async Task<List<RefaccionDto>> ObtenerRefaccionesAsync()
+        public async Task<List<RefaccionDto>> ObtenerTodasRefaccionesAsync()
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{BaseUrl}/Refacciones/paginado");
+                var response = await _httpClient.GetAsync($"{BaseUrl}/Refacciones/todos");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<List<RefaccionDto>>();
-                    return result ?? new List<RefaccionDto>();
-                }
-                return new List<RefaccionDto>();
+                if (!response.IsSuccessStatusCode)
+                    return new List<RefaccionDto>();
+
+                return await response.Content
+                    .ReadFromJsonAsync<List<RefaccionDto>>() ?? new();
             }
+            catch
+            {
+                return new();
+            }
+        }
 
+        public async Task<RefaccionesPaginadasResponse?> ObtenerRefaccionesAsync(
+            int pagina = 1,
+            int porPagina = 20,
+            string? busqueda = null)
+        {
+            try
+            {
+                var url = $"{BaseUrl}/Refacciones/paginado" +
+                          $"?pagina={pagina}&porPagina={porPagina}";
+
+                if (!string.IsNullOrWhiteSpace(busqueda))
+                    url += $"&busqueda={Uri.EscapeDataString(busqueda)}";
+
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                return await response.Content
+                    .ReadFromJsonAsync<RefaccionesPaginadasResponse>();
+            }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error al obtener refacciones: {ex.Message}");
-                return new List<RefaccionDto>();
+                Debug.WriteLine($"❌ Error API: {ex.Message}");
+                return null;
             }
         }
 
