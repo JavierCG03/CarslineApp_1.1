@@ -299,7 +299,10 @@ namespace CarslineApp.Models
         public bool EstaCompletado => EstadoTrabajo == 4;
         public bool EstaPausado => EstadoTrabajo == 5;
         public bool EstaCancelado => EstadoTrabajo == 6;
-
+        public string FechaFormateada => FechaPromesaEntrega.ToString("dd/MMM");
+        public string HoraFormateada => FechaPromesaEntrega.ToString("hh:mm tt");
+       
+        public bool TieneIndicaciones => !string.IsNullOrWhiteSpace(IndicacionesTrabajo);
         public string DuracionFormateada
         {
             get

@@ -153,445 +153,577 @@
                             <ScrollView>
                                 <VerticalStackLayout Padding="15" Spacing="20">
 
-                                    <!-- ==================== Trabajos Servicio==================== -->
-                                    
-                                    <Frame BackgroundColor="#FFE5E5" BorderColor="#D60000" Padding="15" HasShadow="True" CornerRadius="10">
+                                    <!-- ==================== Trabajos Servicio==================== -->       
+                                    <Frame
+                                        IsVisible="{Binding HayTrabajosServicio}"
+                                        BackgroundColor="#FFF5F5"
+                                        BorderColor="#D60000"
+                                        Padding="15"
+                                        HasShadow="True"
+                                        CornerRadius="12">
+
                                         <VerticalStackLayout Spacing="10">
-                                            <Label Text="📋 ÓRDENES PENDIENTES"
+
+                                            <Label Text="🔧 SERVICIO"
                                                    FontSize="18"
-                                                   HorizontalOptions="Center"
                                                    FontAttributes="Bold"
-                                                   TextColor="Black"/>
-                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
+                                                   TextColor="#D60000"/>
 
-                                            <CollectionView ItemsSource="{Binding OrdenesPendientes}">
-                                                <CollectionView.EmptyView>
-                                                    <Label Text="✓ No hay órdenes pendientes"
-                                                           TextColor="#919191"
-                                                           FontSize="14"
-                                                           HorizontalOptions="Center"
-                                                           Margin="0,20"/>
-                                                </CollectionView.EmptyView>
+                                            <BoxView HeightRequest="2" BackgroundColor="White"/>
 
+                                            <CollectionView ItemsSource="{Binding TrabajosServicio}">
                                                 <CollectionView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Frame BackgroundColor="#2A2A2A"
-                                                               Padding="15"
-                                                               Margin="0,10,0,15"
-                                                               HasShadow="False"                                                           
-                                                               CornerRadius="12"
-                                                               BorderColor="White">
+                                                        <Frame Padding="12"
+                                                               Margin="0,6"
+                                                               BorderColor="#D60000"
+                                                               BackgroundColor="White"
+                                                               CornerRadius="10"
+                                                               HasShadow="False">
 
-                                                            <VerticalStackLayout Spacing="12">
+                                                            <VerticalStackLayout Spacing="6">
 
-                                                                <!-- ENCABEZADO -->
                                                                 <Grid ColumnDefinitions="*,Auto">
                                                                     <Label Grid.Column="0"
-                                                                           Text="{Binding VehiculoCompleto}"
-                                                                           FontSize="18"
+                                                                        Text="{Binding VehiculoCompleto}"
+                                                                           FontSize="15"
                                                                            FontAttributes="Bold"
-                                                                           TextColor="White"/>
-                                                                    <Frame Grid.Column="1"
-                                                                           BackgroundColor="#D60000"
-                                                                           Padding="8,4"
-                                                                           CornerRadius="6"
-                                                                           HasShadow="False"
-                                                                           HeightRequest="30">
-                                                                        <Label Text="{Binding NumeroOrden}"
-                                                                               FontSize="11"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="White"/>
-                                                                    </Frame>
-                                                                </Grid>
-
-                                                                <Grid ColumnDefinitions="Auto,Auto">
-                                                                    <Label Grid.Column="0"
-                                                                           Text="VIN:"
-                                                                           FontSize="18"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding NumeroOrden}"
+                                                                           FontSize="12"
                                                                            FontAttributes="Bold"
-                                                                           TextColor="White"/>
-                                                                    <Frame Grid.Column="1"
-                                                                           BackgroundColor="#D60000"
-                                                                           Padding="8,4"
-                                                                           CornerRadius="6"
-                                                                           HasShadow="False"
-                                                                           HeightRequest="30">
-                                                                        <Label Text="{Binding VIN}"
-                                                                               FontSize="11"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="White"/>
-                                                                    </Frame>
+                                                                           TextColor="#D60000"/>
                                                                 </Grid>
-
-                                                                <!-- TRABAJOS -->
-                                                                <Frame BackgroundColor="#FFF5F5"
-                                                                       Padding="12"
-                                                                       HasShadow="False"
-                                                                       BorderColor="#D60000"
-                                                                       CornerRadius="8">
-                                                                    <VerticalStackLayout Spacing="10">
-                                                                        <Label Text="🔧 TRABAJOS"
-                                                                               FontSize="13"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="#D60000"/>
-
-                                                                        <CollectionView ItemsSource="{Binding Trabajos}">
-                                                                            <CollectionView.ItemTemplate>
-                                                                                <DataTemplate>
-                                                                                    <Frame BackgroundColor="White"
-                                                                                           Padding="10"
-                                                                                           Margin="0,5"
-                                                                                           HasShadow="False"
-                                                                                           BorderColor="{Binding ColorVisualEstado}">
-                                                                                        <VerticalStackLayout Spacing="8">
-                                                                                            <!-- Nombre del trabajo -->
-                                                                                            <Label Text="{Binding Trabajo}"
-                                                                                                   FontSize="13"
-                                                                                                   FontAttributes="Bold"
-                                                                                                   TextColor="Black"/>
-
-                                                                                            <Label Text="{Binding IndicacionesTrabajo}"
-                                                                                                   FontSize="11"
-                                                                                                   FontAttributes="Bold"
-                                                                                                   TextColor="Gray"
-                                                                                                   IsVisible="{Binding TieneIndicaciones}"/>
-
-                                                                                        </VerticalStackLayout>
-                                                                                    </Frame>
-                                                                                </DataTemplate>
-                                                                            </CollectionView.ItemTemplate>
-                                                                        </CollectionView>
-                                                                    </VerticalStackLayout>
-                                                                </Frame>
                                                                 
+                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="Placas:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Placas}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="2"
+                                                                        Text="VIN:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="3"
+                                                                        Text="{Binding VIN}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                </Grid>
+                                                                
+                                                                <Grid ColumnDefinitions="Auto,*">
+
+                                                                    <Label Grid.Column="0"
+                                                                        Text="Hora de Entrega:"
+                                                                           FontSize="12"                                                                           
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                       Text="{Binding HoraFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,*">
+                                                                    
+                                                                    <Label Grid.Column="0"
+                                                                        Text="--->"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Trabajo}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+
+                                                                </Grid>
+
+                                                                <Label IsVisible="{Binding TieneIndicaciones}" 
+                                                                        Text="{Binding IndicacionesTrabajo}"
+                                                                           FontSize="12"                                                                         
+                                                                           TextColor="#444"/>
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>
                                                 </CollectionView.ItemTemplate>
                                             </CollectionView>
-                                        </VerticalStackLayout>
-                                    </Frame>
 
-                                    <!-- ==================== ÓRDENES EN PROCESO ==================== -->
-                                    <Frame BackgroundColor="White" Padding="15" HasShadow="True" CornerRadius="10">
-                                        <VerticalStackLayout Spacing="10">
-                                            <Label Text="⚙️ ÓRDENES EN PROCESO"
-                                                   FontSize="18"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#404040"/>
-                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
-
-                                            <CollectionView ItemsSource="{Binding OrdenesProceso}">
-                                                <CollectionView.EmptyView>
-                                                    <Label Text="✓ No hay órdenes en proceso"
-                                                           TextColor="#919191"
-                                                           FontSize="14"
-                                                           HorizontalOptions="Center"
-                                                           Margin="0,20"/>
-                                                </CollectionView.EmptyView>
-
-                                                <CollectionView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Frame BackgroundColor="#FFF8E1"
-                                                               Padding="15"
-                                                               Margin="0,10,0,15"
-                                                               HasShadow="False"
-                                                               BorderColor="#FFA500"
-                                                               CornerRadius="12">
-                                                            <VerticalStackLayout Spacing="12">
-
-                                                                <!-- ENCABEZADO -->
-                                                                <Grid ColumnDefinitions="*,Auto">
-                                                                    <Label Grid.Column="0"
-                                                                           Text="{Binding VehiculoCompleto}"
-                                                                           FontSize="18"
-                                                                           FontAttributes="Bold"
-                                                                           TextColor="#1A1A1A"/>
-                                                                    <Frame Grid.Column="1"
-                                                                           BackgroundColor="#FFA500"
-                                                                           Padding="8,4"
-                                                                           CornerRadius="6"
-                                                                           HasShadow="False"
-                                                                           HeightRequest="30">
-                                                                        <Label Text="{Binding NumeroOrden}"
-                                                                               FontSize="11"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="White"/>
-                                                                    </Frame>
-                                                                </Grid>
-
-                                                                <Grid ColumnDefinitions="Auto,Auto">
-                                                                    <Label Grid.Column="0"
-                                                                           Text="VIN:"
-                                                                           FontSize="18"
-                                                                           FontAttributes="Bold"
-                                                                           TextColor="#1A1A1A"/>
-                                                                    <Frame Grid.Column="1"
-                                                                           BackgroundColor="#FFA500"
-                                                                           Padding="8,4"
-                                                                           CornerRadius="6"
-                                                                           HasShadow="False"
-                                                                           HeightRequest="30">
-                                                                        <Label Text="{Binding VIN}"
-                                                                               FontSize="11"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="White"/>
-                                                                    </Frame>
-                                                                </Grid>
-
-                                                                <!-- PROGRESO -->
-                                                                <Frame BackgroundColor="#FFFBF5"
-                                                                       Padding="12"
-                                                                       HasShadow="False"
-                                                                       CornerRadius="8">
-                                                                    <VerticalStackLayout Spacing="8">
-                                                                        <Grid ColumnDefinitions="Auto,*,Auto">
-                                                                            <Label Grid.Column="0" Text="🔧" FontSize="14"/>
-                                                                            <Label Grid.Column="1"
-                                                                                   FontSize="12"
-                                                                                   TextColor="#666"
-                                                                                   Margin="5,0,0,0">
-                                                                                <Label.FormattedText>
-                                                                                    <FormattedString>
-                                                                                        <Span Text="Trabajos: "/>
-                                                                                        <Span Text="{Binding ProgresoTexto}" 
-                                                                                              FontAttributes="Bold"/>
-                                                                                    </FormattedString>
-                                                                                </Label.FormattedText>
-                                                                            </Label>
-                                                                            <Label Grid.Column="2"
-                                                                                   Text="{Binding ProgresoFormateado}"
-                                                                                   FontSize="13"
-                                                                                   FontAttributes="Bold"
-                                                                                   TextColor="#FFA500"/>
-                                                                        </Grid>
-                                                                        <ProgressBar Progress="{Binding ProgressBar}"
-                                                                                     ProgressColor="#FFA500"
-                                                                                     ScaleY="3"
-                                                                                     HeightRequest="12"/>
-                                                                    </VerticalStackLayout>
-                                                                </Frame>
-                                                                <!-- TRABAJOS -->
-                                                                <Frame BackgroundColor="#FFF5F5"
-                                                                       Padding="12"
-                                                                       HasShadow="False"
-                                                                       CornerRadius="8">
-                                                                    <VerticalStackLayout Spacing="10">
-                                                                        <Label Text="🔧 TRABAJOS"
-                                                                               FontSize="13"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="#FFA500"/>
-
-                                                                        <CollectionView ItemsSource="{Binding Trabajos}">
-                                                                            <CollectionView.ItemTemplate>
-                                                                                <DataTemplate>
-                                                                                    <Frame BackgroundColor="White"
-                                                                                           Padding="10"
-                                                                                           Margin="0,5"
-                                                                                           HasShadow="False"
-                                                                                           BorderColor="{Binding ColorVisualEstado}">
-                                                                                        <VerticalStackLayout Spacing="8">
-                                                                                            <Grid ColumnDefinitions="Auto,*">
-                                                                                                <Label Grid.Column="0"
-                                                                                                    Text="{Binding Trabajo}"
-                                                                                                    FontSize="13"
-                                                                                                    FontAttributes="Bold"
-                                                                                                    TextColor="Black"/>
-                                                                                                <Label Grid.Column="1"
-                                                                                                     Text="{Binding EstadoTrabajoNombre }"
-                                                                                                     FontSize="13"
-                                                                                                     FontAttributes="Bold"
-                                                                                                     HorizontalOptions="Center"
-                                                                                                     TextColor="{Binding ColorVisualEstado}"/>
-                                                                                            </Grid>
-                                                                                            <Label Text="{Binding IndicacionesTrabajo}"
-                                                                                                   FontSize="11"
-                                                                                                   FontAttributes="Bold"
-                                                                                                   TextColor="gray"
-                                                                                                   IsVisible="{Binding TieneIndicaciones}"/>
-                                                                                            <Grid ColumnDefinitions="Auto,Auto">
-                                                                                                <Label Grid.Column="1"
-                                                                                                    Text="{Binding TextoTecnico}"
-                                                                                                    FontSize="12"
-                                                                                                    VerticalOptions="Center"
-                                                                                                    TextColor="Black"/>
-                                                                                                <!-- Botón Reasignar -->
-                                                                                                <Button Grid.Column="0"
-                                                                                                    Text="🔄Reasignar"
-                                                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ReasignarTecnicoCommand}"
-                                                                                                    CommandParameter="{Binding .}"
-                                                                                                    IsVisible="{Binding PuedeReasignar}"
-                                                                                                    BackgroundColor="#FF9800"
-                                                                                                    TextColor="White"
-                                                                                                    FontSize="11"
-                                                                                                    HeightRequest="35"
-                                                                                                    CornerRadius="6"/>
-                                                                                            </Grid>
-
-                                                                                            <!-- Botón Asignar -->
-                                                                                            <Button Text="👤 ASIGNAR TÉCNICO"
-                                                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AsignarTecnicoCommand}"
-                                                                                                    CommandParameter="{Binding .}"
-                                                                                                    IsVisible="{Binding PuedeAsignar}"
-                                                                                                    BackgroundColor="#2196F3"
-                                                                                                    TextColor="White"
-                                                                                                    FontSize="11"
-                                                                                                    HeightRequest="35"
-                                                                                                    CornerRadius="6"/>
-                                                                                        </VerticalStackLayout>
-                                                                                    </Frame>
-                                                                                </DataTemplate>
-                                                                            </CollectionView.ItemTemplate>
-                                                                        </CollectionView>
-                                                                    </VerticalStackLayout>
-                                                                </Frame>
-                                                            </VerticalStackLayout>
-                                                        </Frame>
-                                                    </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                            </CollectionView>
-                                        </VerticalStackLayout>
-                                    </Frame>
-
-                                    <!-- ==================== ÓRDENES FINALIZADAS ==================== -->
-                                    <Frame BackgroundColor="White" Padding="15" HasShadow="True" CornerRadius="10">
-                                        <VerticalStackLayout Spacing="10">
-                                            <Label Text="✅ ÓRDENES FINALIZADAS"
-                                                   FontSize="18"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#404040"/>
-                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
-
-                                            <CollectionView ItemsSource="{Binding OrdenesFinalizadas}">
-                                                <CollectionView.EmptyView>
-                                                    <Label Text="✓ No hay órdenes finalizadas"
-                                                           TextColor="#919191"
-                                                           FontSize="14"
-                                                           HorizontalOptions="Center"
-                                                           Margin="0,20"/>
-                                                </CollectionView.EmptyView>
-
-                                                <CollectionView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Frame BackgroundColor="#F1F8F4"
-                                                               Padding="15"
-                                                               Margin="0,10,0,15"
-                                                               HasShadow="False"
-                                                               BorderColor="#4CAF50"
-                                                               CornerRadius="12">
-                                                            <VerticalStackLayout Spacing="12">
-
-                                                                <!-- ENCABEZADO -->
-                                                                <Grid ColumnDefinitions="*,Auto">
-                                                                    <Label Grid.Column="0"
-                                                                           Text="{Binding VehiculoCompleto}"
-                                                                           FontSize="18"
-                                                                           FontAttributes="Bold"
-                                                                           TextColor="#1A1A1A"/>
-                                                                    <Frame Grid.Column="1"
-                                                                           BackgroundColor="#4CAF50"
-                                                                           Padding="8,4"
-                                                                           CornerRadius="6"
-                                                                           HasShadow="False"
-                                                                           HeightRequest="30">
-                                                                        <Label Text="{Binding NumeroOrden}"
-                                                                               FontSize="11"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="White"/>
-                                                                    </Frame>
-                                                                </Grid>
-                                                                <Grid ColumnDefinitions="Auto,Auto">
-                                                                    <Label Grid.Column="0"
-                                                                           Text="VIN:"
-                                                                           FontSize="18"
-                                                                           FontAttributes="Bold"
-                                                                           TextColor="#1A1A1A"/>
-                                                                    <Frame Grid.Column="1"
-                                                                           BackgroundColor="#4CAF50"
-                                                                           Padding="8,4"
-                                                                           CornerRadius="6"
-                                                                           HasShadow="False"
-                                                                           HeightRequest="30">
-                                                                        <Label Text="{Binding VIN}"
-                                                                               FontSize="11"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="White"/>
-                                                                    </Frame>
-                                                                </Grid>
-                                                                <!-- PROGRESO COMPLETADO -->
-                                                                <Frame BackgroundColor="#F9FFF9"
-                                                                       Padding="12"
-                                                                       HasShadow="False"
-                                                                       CornerRadius="8">
-                                                                    <Label FontSize="12"
-                                                                           TextColor="#4CAF50"
-                                                                           FontAttributes="Bold">
-                                                                        <Label.FormattedText>
-                                                                            <FormattedString>
-                                                                                <Span Text="✅ Completado: "/>
-                                                                                <Span Text="{Binding ProgresoTexto}"/>
-                                                                                <Span Text=" - "/>
-                                                                                <Span Text="{Binding ProgresoFormateado}"/>
-                                                                            </FormattedString>
-                                                                        </Label.FormattedText>
-                                                                    </Label>
-                                                                </Frame>
-
-                                                                <!-- TRABAJOS -->
-                                                                <Frame BackgroundColor="#FFF5F5"
-                                                                       Padding="12"
-                                                                       HasShadow="False"
-                                                                       CornerRadius="8">
-                                                                    <VerticalStackLayout Spacing="10">
-                                                                        <Label Text="🔧 TRABAJOS"
-                                                                               FontSize="13"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="#4CAF50"/>
-                                                                        <CollectionView ItemsSource="{Binding Trabajos}">
-                                                                            <CollectionView.ItemTemplate>
-                                                                                <DataTemplate>
-                                                                                    <Frame BackgroundColor="White"
-                                                                                           Padding="10"
-                                                                                           Margin="0,5"
-                                                                                           HasShadow="False"
-                                                                                           BorderColor="{Binding ColorVisualEstado}">
-                                                                                        <VerticalStackLayout Spacing="8">
-                                                                                            <Grid ColumnDefinitions="Auto,*">
-                                                                                                <Label Grid.Column="0"
-                                                                                                    Text="{Binding Trabajo}"
-                                                                                                    FontSize="13"
-                                                                                                    FontAttributes="Bold"
-                                                                                                    TextColor="Black"/>
-                                                                                                <Label Grid.Column="1"
-                                                                                                     Text="{Binding EstadoTrabajoNombre }"
-                                                                                                     FontSize="13"
-                                                                                                     FontAttributes="Bold"
-                                                                                                     HorizontalOptions="Center"
-                                                                                                     TextColor="{Binding ColorVisualEstado}"/>
-                                                                                            </Grid>
-                                                                                            <Label Text="{Binding IndicacionesTrabajo}"
-                                                                                                   FontSize="11"
-                                                                                                   FontAttributes="Bold"
-                                                                                                   TextColor="Gray"
-                                                                                                   IsVisible="{Binding TieneIndicaciones}"/>
-                                                                                            <Label Text="{Binding TextoTecnico}"
-                                                                                                   FontSize="12"
-                                                                                                   TextColor="Black"/>
-                                                                                        </VerticalStackLayout>
-                                                                                    </Frame>
-                                                                                </DataTemplate>
-                                                                            </CollectionView.ItemTemplate>
-                                                                        </CollectionView>
-                                                                    </VerticalStackLayout>
-                                                                </Frame>
-                                                            </VerticalStackLayout>
-                                                        </Frame>
-                                                    </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                            </CollectionView>
                                         </VerticalStackLayout>
                                     </Frame>
                                     
+                                    <!--- Diagnosticos-->
+                                    <Frame
+                                        IsVisible="{Binding HayTrabajosDiagnostico}"
+                                        BackgroundColor="#E3F2FD"
+                                        BorderColor="#2196F3"
+                                        Padding="15"
+                                        HasShadow="True"
+                                        CornerRadius="12">
+
+                                        <VerticalStackLayout Spacing="10">
+
+                                            <Label Text="🧪 DIAGNÓSTICO"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2196F3"/>
+
+                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
+
+                                            <CollectionView ItemsSource="{Binding TrabajosDiagnostico}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="12"
+                                                               Margin="0,6"
+                                                               BorderColor="#2196F3"
+                                                               BackgroundColor="White"
+                                                               CornerRadius="10"
+                                                               HasShadow="False">
+
+                                                            <VerticalStackLayout Spacing="6">
+
+                                                                <Grid ColumnDefinitions="*,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="{Binding VehiculoCompleto}"
+                                                                           FontSize="15"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding NumeroOrden}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#D60000"/>
+                                                                </Grid>
+    
+                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="Placas:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Placas}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="2"
+                                                                        Text="VIN:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="3"
+                                                                        Text="{Binding VIN}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,Auto,*">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="FechaEntrega"
+                                                                           FontSize="12"                                                                           
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                       Text="{Binding FechaFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       WidthRequest="60"                                                                   
+                                                                       TextColor="Black"/>
+
+                                                                    <Label Grid.Column="3"
+                                                                       Text="{Binding HoraFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,*">
+        
+                                                                    <Label Grid.Column="0"
+                                                                        Text="--->"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Trabajo}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+
+                                                                </Grid>
+
+                                                                <Label IsVisible="{Binding TieneIndicaciones}" 
+                                                                        Text="{Binding IndicacionesTrabajo}"
+                                                                           FontSize="12"                                                                         
+                                                                           TextColor="#444"/>
+                                                            </VerticalStackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+
+                                        </VerticalStackLayout>
+                                    </Frame>
+
+                                    <!--- Reparacion-->
+                                    <Frame
+                                        IsVisible="{Binding HayTrabajosReparacion}"
+                                        BackgroundColor="#FFF8E1"
+                                        BorderColor="#FFA000"
+                                        Padding="15"
+                                        HasShadow="True"
+                                        CornerRadius="12">
+
+                                        <VerticalStackLayout Spacing="10">
+
+                                            <Label Text="🛠️ REPARACIÓN"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#FFA000"/>
+
+                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
+
+                                            <CollectionView ItemsSource="{Binding TrabajosReparacion}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="12"
+                                                               Margin="0,6"
+                                                               BorderColor="#FFA000"
+                                                               BackgroundColor="White"
+                                                               CornerRadius="10"
+                                                               HasShadow="False">
+
+                                                            <VerticalStackLayout Spacing="6">
+
+                                                                <Grid ColumnDefinitions="*,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="{Binding VehiculoCompleto}"
+                                                                           FontSize="15"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding NumeroOrden}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#D60000"/>
+                                                                </Grid>
+    
+                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="Placas:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Placas}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="2"
+                                                                        Text="VIN:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="3"
+                                                                        Text="{Binding VIN}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,Auto,*">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="FechaEntrega"
+                                                                           FontSize="12"                                                                           
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                       Text="{Binding FechaFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       WidthRequest="60"                                                                   
+                                                                       TextColor="Black"/>
+
+                                                                    <Label Grid.Column="3"
+                                                                       Text="{Binding HoraFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,*">
+        
+                                                                    <Label Grid.Column="0"
+                                                                        Text="--->"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Trabajo}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+
+                                                                </Grid>
+
+                                                                <Label IsVisible="{Binding TieneIndicaciones}" 
+                                                                        Text="{Binding IndicacionesTrabajo}"
+                                                                           FontSize="12"                                                                         
+                                                                           TextColor="#444"/>
+                                                            </VerticalStackLayout>
+
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+
+                                        </VerticalStackLayout>
+                                    </Frame>
+                                    <!---Garantia-->
+                                    <Frame
+                                        IsVisible="{Binding HayTrabajosGarantia}"
+                                        BackgroundColor="#E8F5E9"
+                                        BorderColor="#4CAF50"
+                                        Padding="15"
+                                        HasShadow="True"
+                                        CornerRadius="12">
+
+                                        <VerticalStackLayout Spacing="10">
+
+                                            <Label Text="🛡️ GARANTÍA"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#4CAF50"/>
+
+                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
+
+                                            <CollectionView ItemsSource="{Binding TrabajosGarantia}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="12"
+                                                               Margin="0,6"
+                                                               BorderColor="#4CAF50"
+                                                               BackgroundColor="White"
+                                                               CornerRadius="10"
+                                                               HasShadow="False">
+                                                            <VerticalStackLayout Spacing="6">
+
+                                                                <Grid ColumnDefinitions="*,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="{Binding VehiculoCompleto}"
+                                                                           FontSize="15"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding NumeroOrden}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#D60000"/>
+                                                                </Grid>
+    
+                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="Placas:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Placas}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="2"
+                                                                        Text="VIN:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="3"
+                                                                        Text="{Binding VIN}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,Auto,*">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="FechaEntrega"
+                                                                           FontSize="12"                                                                           
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                       Text="{Binding FechaFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       WidthRequest="60"                                                                   
+                                                                       TextColor="Black"/>
+
+                                                                    <Label Grid.Column="3"
+                                                                       Text="{Binding HoraFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,*">
+        
+                                                                    <Label Grid.Column="0"
+                                                                        Text="--->"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Trabajo}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+
+                                                                </Grid>
+
+                                                                <Label IsVisible="{Binding TieneIndicaciones}" 
+                                                                        Text="{Binding IndicacionesTrabajo}"
+                                                                           FontSize="12"                                                                         
+                                                                           TextColor="#444"/>
+                                                            </VerticalStackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+
+                                        </VerticalStackLayout>
+                                    </Frame>
+                                    
+                                    <!---Reacondicionaiento-->
+                                    <Frame
+                                        IsVisible="{Binding HayTrabajosReacondicionamiento}"
+                                        BackgroundColor="#F3E5F5"
+                                        BorderColor="#9C27B0"
+                                        Padding="15"
+                                        HasShadow="True"
+                                        CornerRadius="12">
+
+                                        <VerticalStackLayout Spacing="10">
+
+                                            <Label Text="♻️ REACONDICIONAMIENTO"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#9C27B0"/>
+
+                                            <BoxView HeightRequest="2" BackgroundColor="#E0E0E0"/>
+
+                                            <CollectionView ItemsSource="{Binding TrabajosReacondicionamiento}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="12"
+                                                               Margin="0,6"
+                                                               BorderColor="#9C27B0"
+                                                               BackgroundColor="White"
+                                                               CornerRadius="10"
+                                                               HasShadow="False">
+                                                            <VerticalStackLayout Spacing="6">
+                                                                <Grid ColumnDefinitions="*,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="{Binding VehiculoCompleto}"
+                                                                           FontSize="15"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding NumeroOrden}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="#D60000"/>
+                                                                </Grid>
+    
+                                                                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="Placas:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Placas}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                    <Label Grid.Column="2"
+                                                                        Text="VIN:"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+                                                                    <Label Grid.Column="3"
+                                                                        Text="{Binding VIN}"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,Auto,*">
+                                                                    <Label Grid.Column="0"
+                                                                        Text="FechaEntrega"
+                                                                           FontSize="12"                                                                           
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                       Text="{Binding FechaFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       WidthRequest="60"                                                                   
+                                                                       TextColor="Black"/>
+
+                                                                    <Label Grid.Column="3"
+                                                                       Text="{Binding HoraFormateada}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+                                                                </Grid>
+
+                                                                <Grid ColumnDefinitions="Auto,*">
+        
+                                                                    <Label Grid.Column="0"
+                                                                        Text="--->"
+                                                                           FontSize="12"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="red"/>
+
+                                                                    <Label Grid.Column="1"
+                                                                        Text="{Binding Trabajo}"
+                                                                       FontSize="13"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="Black"/>
+
+                                                                </Grid>
+
+                                                                <Label IsVisible="{Binding TieneIndicaciones}" 
+                                                                        Text="{Binding IndicacionesTrabajo}"
+                                                                           FontSize="12"                                                                         
+                                                                           TextColor="#444"/>
+                                                            </VerticalStackLayout>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+
+                                        </VerticalStackLayout>
+                                    </Frame>
                                     
                                 </VerticalStackLayout>
                             </ScrollView>

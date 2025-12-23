@@ -149,41 +149,63 @@ namespace CarslineApp.ViewModels.ViewModelsHome
 
             try
             {
-               
-                int TecnicoId = Preferences.Get("user_id", 0);
-                var TrabajosList = await _apiService.ObtenerMisTrabajosAsync(TecnicoId, EstadoTrabajoSeleccionado);
+                int tecnicoId = Preferences.Get("user_id", 0);
 
-                for each (var Trabajos in TrabajosList.Trabajos)
+                var response = await _apiService.ObtenerMisTrabajosAsync(
+                    tecnicoId,
+                    EstadoTrabajoSeleccionado
+                );
+
+                if (response == null || response.Trabajos == null)
+                    return;
+
+                // 🔹 LIMPIAR LISTAS
+                TrabajosServicio.Clear();
+                TrabajosDiagnostico.Clear();
+                TrabajosReparacion.Clear();
+                TrabajosGarantia.Clear();
+                TrabajosReacondicionamiento.Clear();
+
+                // 🔹 SEPARAR POR TIPO DE ORDEN
+                foreach (var trabajo in response.Trabajos)
                 {
                     switch (trabajo.TipoOrden)
                     {
                         case 1:
-                            trabajosServicio.Add(trabajo);
+                            TrabajosServicio.Add(trabajo);
                             break;
+
                         case 2:
-                            trabajosDiagnostico.Add(trabajo);                          
+                            TrabajosDiagnostico.Add(trabajo);
                             break;
+
                         case 3:
-                            trabajosReparacion.Add(trabajo);
+                            TrabajosReparacion.Add(trabajo);
                             break;
+
                         case 4:
-                            trabajosGarantia.Add(trabajo);
+                            TrabajosGarantia.Add(trabajo);
                             break;
+
                         case 5:
-                            trabajosReacondicionamiento.Add(trabajo);
+                            TrabajosReacondicionamiento.Add(trabajo);
                             break;
-                        
-                            NotificarCambiosDashboards();
                     }
                 }
 
+                // 🔹 NOTIFICAR DASHBOARD
+                NotificarCambiosDashboards();
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine($"❌ Error CargarTrabajos: {ex.Message}");
             }
-
+            finally
+            {
+                IsLoading = false;
+            }
         }
+
 
         private void NotificarCambiosDashboards()
         {
