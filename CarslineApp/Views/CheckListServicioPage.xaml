@@ -5,29 +5,781 @@
              Title="Checklist de Servicio">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="16">
+        <VerticalStackLayout Padding="20" Spacing="20">
 
             <Label Text="Checklist de Servicio"
                    FontSize="22"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"/>
 
-            <!-- EJEMPLOS -->
-            <CheckBox />
-            <Label Text="Nivel de aceite"/>
 
-            <CheckBox />
-            <Label Text="Filtro de aceite"/>
+            <Label Text="Revisiones Basicas del Servicio"
+                   FontSize="18"
+                   HorizontalOptions="Start"
+                   FontAttributes="Bold"/>
+            <!--Sistema de Direccion-->           
+            <Frame Padding="10"
+               BackgroundColor="White"
+               CornerRadius="10">
 
-            <CheckBox />
-            <Label Text="Presión de llantas"/>
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- TÍTULO -->
+                    <Label Text="Sistema de Dirección"
+                       FontSize="15"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"/>
+
+                    <!-- ENCABEZADOS -->
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center" >
+
+                        <Label Grid.Column="1"
+                           Text="Buen estado"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="2"
+                           Text="Vida media"
+                           TextColor="#FFA000"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="3"
+                           Text="Atención urgente"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+                    </Grid>
+                    
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Bieletas"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="Bieletas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="Bieletas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="Bieletas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                    
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Terminales"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="Terminales"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="Terminales"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="Terminales"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                    
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Caja de Direccion"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="CajaDireccion"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="CajaDireccion"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="CajaDireccion"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Volante"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="Volante"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="Volante"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="Volante"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <!--Sistema de Suspension-->
+            <Frame Padding="10"
+               BackgroundColor="White"
+               CornerRadius="10">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- TÍTULO -->
+                    <Label Text="Sistema de Suspension"
+                       FontSize="15"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"/>
+
+                    <!-- ENCABEZADOS -->
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center" >
+
+                        <Label Grid.Column="1"
+                           Text="Buen estado"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="2"
+                           Text="Vida media"
+                           TextColor="#FFA000"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="3"
+                           Text="Atención urgente"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Amortiguadores Delanteros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="AmortiguadoresDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="AmortiguadoresDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="AmortiguadoresDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Amortiguadores Traseros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="AmortiguadoresTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="AmortiguadoresTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="AmortiguadoresTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Barra Estabilizadora"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="BarraEstabilizadora"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="BarraEstabilizadora"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="BarraEstabilizadora"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Horquillas"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="Horquillas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="Horquillas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="Horquillas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <!--Sistema de Frenado-->
+            <Frame Padding="10"
+               BackgroundColor="White"
+               CornerRadius="10">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- TÍTULO -->
+                    <Label Text="Sistema de Frenado"
+                       FontSize="15"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"/>
+
+                    <!-- ENCABEZADOS -->
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center" >
+
+                        <Label Grid.Column="1"
+                           Text="Buen estado"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="2"
+                           Text="Vida media"
+                           TextColor="#FFA000"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="3"
+                           Text="Atención urgente"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Discos/Tambores Delanteros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="DiscosTamboresDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="DiscosTamboresDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="DiscosTamboresDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Discos/Tambores Traseros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="DiscosTamboresTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="DiscosTamboresTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="DiscosTamboresTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Balatas Delanteras"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="BalatasDelanteras"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="BalatasDelanteras"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="BalatasDelanteras"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Balatas Traseras"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="BalatasTraseras"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="BalatasTraseras"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="BalatasTraseras"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <!--Neumaticos-->
+            <Frame Padding="10"
+               BackgroundColor="White"
+               CornerRadius="10">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- TÍTULO -->
+                    <Label Text="Neumaticos"
+                       FontSize="15"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"/>
+
+                    <!-- ENCABEZADOS -->
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center" >
+
+                        <Label Grid.Column="1"
+                           Text="Buen estado"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="2"
+                           Text="Vida media"
+                           TextColor="#FFA000"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="3"
+                           Text="Atención urgente"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Neumaticos Delanteros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="NeumaticosDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="NeumaticosDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="NeumaticosDelanteros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Neumaticos Traseros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="NeumaticosTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="NeumaticosTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="NeumaticosTraseros"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Balanceo"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="Balanceo"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="Balanceo"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="Balanceo"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Alineacion"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Bueno"
+                             GroupName="Alineacion"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Regular"
+                             GroupName="Alineacion"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="3"
+                             Value="Malo"
+                             GroupName="Alineacion"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <!--Luces-->
+            <Frame Padding="10"
+               BackgroundColor="White"
+               CornerRadius="10">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- TÍTULO -->
+                    <Label Text="Luces del Vehiculo"
+                       FontSize="15"
+                       HorizontalOptions="Center"
+                       FontAttributes="Bold"/>
+
+                    <!-- ENCABEZADOS -->
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center" >
+
+                        <Label Grid.Column="1"
+                           Text="Buen estado"
+                           TextColor="Green"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+
+                        <Label Grid.Column="2"
+                           Text="Presenta Falla"
+                           TextColor="Red"
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"/>
+                    </Grid>
+                    
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Luces Altas"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Buen Estado"
+                             GroupName="LucesAltas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Presenta Falla"
+                             GroupName="LucesAltas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Luces Bajas"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Buen Estado"
+                             GroupName="LucesBajas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Presenta Falla"
+                             GroupName="LucesBajas"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Luces de Reversa "
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Buen Estado"
+                             GroupName="LucesReversa"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Presenta Falla"
+                             GroupName="LucesReversa"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Direccionales"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Buen Estado"
+                             GroupName="LucesDireccionales"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Presenta Falla"
+                             GroupName="LucesDireccionales"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Intermitentes"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Buen Estado"
+                             GroupName="LucesIntermitentes"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Presenta Falla"
+                             GroupName="LucesIntermitentes"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+                    
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+
+                        <!-- Pregunta -->
+                        <Label Grid.Column="0"
+                           Text="Neblineros"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+
+                        <RadioButton Grid.Column="1"
+                             Value="Buen Estado"
+                             GroupName="LucesAntiniebla"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+
+                        <RadioButton Grid.Column="2"
+                             Value="Presenta Falla"
+                             GroupName="LucesAntiniebla"
+                             CheckedChanged="Radio_CheckedChanged"
+                             HorizontalOptions="Center"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
 
             <Button Text="Guardar Checklist"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"/>
+                BackgroundColor="#4CAF50"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="50"
+                Command="{Binding GuardarCommand}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
-
