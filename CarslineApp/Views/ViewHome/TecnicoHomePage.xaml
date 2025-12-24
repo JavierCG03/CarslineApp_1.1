@@ -150,7 +150,7 @@
 
                         <!-- CONTENIDO SCROLL -->
                         <RefreshView Grid.Row="1" IsRefreshing="{Binding IsLoading}" Command="{Binding RefreshCommand}">
-                            <ScrollView>
+                            <ScrollView BackgroundColor="Black">
                                 <VerticalStackLayout Padding="15" Spacing="20">
 
                                     <!-- ==================== Trabajos Servicio==================== -->       
@@ -255,6 +255,18 @@
                                                                         Text="{Binding IndicacionesTrabajo}"
                                                                            FontSize="12"                                                                         
                                                                            TextColor="#444"/>
+
+                                                                <Button
+                                                                    Text="▶ Iniciar"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                                                      Path=BindingContext.IniciarTrabajoCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    BackgroundColor="#4CAF50"
+                                                                    TextColor="White"
+                                                                    FontAttributes="Bold"
+                                                                    CornerRadius="8"
+                                                                    HeightRequest="42"
+                                                                    IsVisible="{Binding PuedeIniciar}" />
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>
@@ -371,6 +383,18 @@
                                                                         Text="{Binding IndicacionesTrabajo}"
                                                                            FontSize="12"                                                                         
                                                                            TextColor="#444"/>
+                                                                
+                                                                <Button
+                                                                    Text="▶ Iniciar"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                                                      Path=BindingContext.IniciarTrabajoCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    BackgroundColor="#4CAF50"
+                                                                    TextColor="White"
+                                                                    FontAttributes="Bold"
+                                                                    CornerRadius="8"
+                                                                    HeightRequest="42"
+                                                                    IsVisible="{Binding PuedeIniciar}" />
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>
@@ -487,6 +511,18 @@
                                                                         Text="{Binding IndicacionesTrabajo}"
                                                                            FontSize="12"                                                                         
                                                                            TextColor="#444"/>
+
+                                                                <Button
+                                                                    Text="▶ Iniciar"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                                                      Path=BindingContext.IniciarTrabajoCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    BackgroundColor="#4CAF50"
+                                                                    TextColor="White"
+                                                                    FontAttributes="Bold"
+                                                                    CornerRadius="8"
+                                                                    HeightRequest="42"
+                                                                    IsVisible="{Binding PuedeIniciar}" />
                                                             </VerticalStackLayout>
 
                                                         </Frame>
@@ -602,6 +638,17 @@
                                                                         Text="{Binding IndicacionesTrabajo}"
                                                                            FontSize="12"                                                                         
                                                                            TextColor="#444"/>
+                                                                <Button
+                                                                    Text="▶ Iniciar"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                                                      Path=BindingContext.IniciarTrabajoCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    BackgroundColor="#4CAF50"
+                                                                    TextColor="White"
+                                                                    FontAttributes="Bold"
+                                                                    CornerRadius="8"
+                                                                    HeightRequest="42"
+                                                                    IsVisible="{Binding PuedeIniciar}" />
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>
@@ -716,6 +763,17 @@
                                                                         Text="{Binding IndicacionesTrabajo}"
                                                                            FontSize="12"                                                                         
                                                                            TextColor="#444"/>
+                                                                <Button
+                                                                    Text="▶ Iniciar"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                                                      Path=BindingContext.IniciarTrabajoCommand}"
+                                                                    CommandParameter="{Binding .}"
+                                                                    BackgroundColor="#4CAF50"
+                                                                    TextColor="White"
+                                                                    FontAttributes="Bold"
+                                                                    CornerRadius="8"
+                                                                    HeightRequest="42"
+                                                                    IsVisible="{Binding PuedeIniciar}" />
                                                             </VerticalStackLayout>
                                                         </Frame>
                                                     </DataTemplate>

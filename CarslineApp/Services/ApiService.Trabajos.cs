@@ -116,6 +116,47 @@ namespace CarslineApp.Services
                 return null;
             }
         }
+
+        public async Task<TrabajoResponse> IniciarTrabajoAsync(int trabajoId, int tecnicoId)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(
+                    HttpMethod.Put,
+                    $"{BaseUrl}/trabajos/iniciar/{trabajoId}"
+                );
+
+                // Header requerido por tu API
+                request.Headers.Add("X-User-Id", tecnicoId.ToString());
+
+                var response = await _httpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new TrabajoResponse
+                    {
+                        Success = false,
+                        Message = $"Error HTTP: {response.StatusCode}"
+                    };
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<TrabajoResponse>();
+
+                return result ?? new TrabajoResponse
+                {
+                    Success = false,
+                    Message = "Respuesta vacía del servidor"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new TrabajoResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 
 }

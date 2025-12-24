@@ -36,6 +36,9 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             RefreshCommand = new Command(async () => await CargarTrabajos());
             LogoutCommand = new Command(async () => await OnLogout());
 
+            // Comandos para Trabajos
+            IniciarTrabajoCommand = new Command<MiTrabajoDto>(async (trabajo) => await IniciarTrabajo(trabajo));
+
             // Solo cargar nombre de usuario aquí
             NombreUsuarioActual = Preferences.Get("user_name", "Tecnico");
         }
@@ -131,11 +134,24 @@ namespace CarslineApp.ViewModels.ViewModelsHome
         public ICommand VerFinalizadosCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand LogoutCommand { get; }
+        public ICommand IniciarTrabajoCommand { get; }
+
 
 
         #endregion
 
         #region Métodos
+        private async Task NavegarACheckList(MiTrabajoDto trabajo)
+        {
+            await Application.Current.MainPage.Navigation.PushAsync(
+                new CheckListServicioPage(
+                    trabajo.Id,
+                    trabajo.OrdenGeneralId,
+                    trabajo.VehiculoCompleto
+                )
+            );
+        }
+
 
         private async void CambiarEstadoTrabajo(int estadoTrabajo)
         {
@@ -199,6 +215,68 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error CargarTrabajos: {ex.Message}");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task IniciarTrabajo(MiTrabajoDto trabajo)
+        {
+            if (trabajo == null)
+                return;
+
+            bool confirmar = await Application.Current.MainPage.DisplayAlert(
+                "Iniciar trabajo",
+                $"¿Deseas iniciar el trabajo:\n{trabajo.Trabajo}?",
+                "Iniciar",
+                "Cancelar");
+
+            if (!confirmar)
+                return;
+
+            try
+            {
+                IsLoading = true;
+
+                int tecnicoId = Preferences.Get("user_id", 0);
+
+                var response = await _apiService.IniciarTrabajoAsync(
+                    trabajo.Id,
+                    tecnicoId
+                );
+
+                if (!response.Success)
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Error",
+                        response.Message,
+                        "OK");
+                    return;
+                }
+
+                // ✅ Si es SERVICIO → navegar a checklist
+                if (trabajo.TipoOrden == 1) // 1 = Servicio
+                {
+                    await NavegarACheckList(trabajo);
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Trabajo iniciado",
+                        response.Message,
+                        "OK");
+                }
+
+                await CargarTrabajos();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    ex.Message,
+                    "OK");
             }
             finally
             {

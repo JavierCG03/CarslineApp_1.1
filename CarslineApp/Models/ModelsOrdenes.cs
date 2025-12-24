@@ -303,6 +303,8 @@ namespace CarslineApp.Models
         public string HoraFormateada => FechaPromesaEntrega.ToString("hh:mm tt");
        
         public bool TieneIndicaciones => !string.IsNullOrWhiteSpace(IndicacionesTrabajo);
+        public bool PuedeIniciar => EstadoTrabajo == 2; // 2 = Pendiente
+
         public string DuracionFormateada
         {
             get
@@ -331,5 +333,10 @@ namespace CarslineApp.Models
                     return $"{duracion.Minutes}m";
             }
         }
+    }
+    public class TrabajoResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }

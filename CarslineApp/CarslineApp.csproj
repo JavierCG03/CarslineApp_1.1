@@ -62,6 +62,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Views\CheckListServicioPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\ViewHome\AdminHomePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
