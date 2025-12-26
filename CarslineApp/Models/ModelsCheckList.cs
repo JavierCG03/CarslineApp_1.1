@@ -6,6 +6,7 @@ namespace CarslineApp.Models
        
         public int TrabajoId { get; set; }
         public int OrdenId { get; set; }
+
         //Sistema de Direccion
         public string Bieletas { get; set; }
         public string Terminales { get; set; }
@@ -39,9 +40,27 @@ namespace CarslineApp.Models
         public string BalatasTraseras { get; set; }
 
 
-        public string NivelAceite { get; set; }
-        public string FiltroAceite { get; set; }
-        public string PresionLlantas { get; set; }
+        // Piezas del vehiculo Remplazadas
+        public bool? ReemplazoAceiteMotor { get; set; }
+        public bool? ReemplazoFiltroAceite  { get; set; }
+        public bool? ReemplazoFiltroAireMotor { get; set; }
+        public bool? ReemplazoFiltroAirePolen { get; set; }
+
+
+        // Revision de Niveles 
+
+        public bool? NivelLiquidoFrenos { get; set; }
+        public bool? NivelAnticongelante { get; set; }
+        public bool? NivelDepositoLimpiaparabrisas { get; set; }
+        public bool? NivelAceiteMotor { get; set; }
+
+        //Trabajos realizados al vehiculo
+
+        public bool? DescristalizacionTamboresDiscos { get; set; }
+        public bool? AjusteFrenos { get; set; }
+        public bool? CalibracionPresionNeumaticos { get; set; }
+        public bool? TorqueNeumaticos { get; set; }
+
     }
 }
 

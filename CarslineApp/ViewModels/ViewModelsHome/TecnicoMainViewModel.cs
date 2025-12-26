@@ -146,7 +146,8 @@ namespace CarslineApp.ViewModels.ViewModelsHome
             await Application.Current.MainPage.Navigation.PushAsync(
                 new CheckListServicioPage(
                     trabajo.Id,
-                    trabajo.OrdenGeneralId,
+                    trabajo.OrdenGeneralId,                
+                    trabajo.Trabajo,
                     trabajo.VehiculoCompleto
                 )
             );
@@ -256,8 +257,9 @@ namespace CarslineApp.ViewModels.ViewModelsHome
                     return;
                 }
 
+                
                 // ✅ Si es SERVICIO → navegar a checklist
-                if (trabajo.TipoOrden == 1) // 1 = Servicio
+                if (trabajo.TipoOrden == 1 && (trabajo.Trabajo== "1er Servicio"|| trabajo.Trabajo == "2do Servicio" || trabajo.Trabajo == "3er Servicio" || trabajo.Trabajo == "Servicio Externo"))
                 {
                     await NavegarACheckList(trabajo);
                 }

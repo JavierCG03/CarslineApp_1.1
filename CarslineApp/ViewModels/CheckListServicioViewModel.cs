@@ -15,16 +15,21 @@ namespace CarslineApp.ViewModels
                 OrdenId = ordenId
             };
         }
-
-        public void SetValor(string campo, string valor)
+        public void SetValor(string campo, object valor)
         {
-            // campo = NivelAceite, FiltroAceite, etc.
             var prop = typeof(CheckListServicioModel).GetProperty(campo);
-            if (prop != null)
+            if (prop == null) return;
+
+            if (prop.PropertyType == typeof(string))
             {
-                prop.SetValue(CheckList, valor);
+                prop.SetValue(CheckList, valor?.ToString());
+            }
+            else if (prop.PropertyType == typeof(bool?) || prop.PropertyType == typeof(bool))
+            {
+                prop.SetValue(CheckList, Convert.ToBoolean(valor));
             }
         }
+
     }
 }
 
