@@ -4,12 +4,15 @@ namespace CarslineApp.Views
 {
     public partial class CheckListServicioPage : ContentPage
     {
-        public CheckListServicioPage(int trabajoId, int ordenId, string Trabajo, string vehiculo)
+        private readonly CheckListServicioViewModel _viewModel;
+
+        public CheckListServicioPage(int trabajoId, int ordenId, string trabajo, string vehiculo)
         {
             InitializeComponent();
 
-            Title = $"{Trabajo} - {vehiculo}";
-            BindingContext = new CheckListServicioViewModel(trabajoId, ordenId);
+            Title = $"{trabajo} - {vehiculo}";
+            _viewModel = new CheckListServicioViewModel(trabajoId, ordenId, trabajo);
+            BindingContext = _viewModel;
         }
 
         private void Radio_CheckedChanged(object sender, CheckedChangedEventArgs e)
@@ -17,19 +20,7 @@ namespace CarslineApp.Views
             if (!e.Value) return;
 
             var radio = (RadioButton)sender;
-            var vm = (CheckListServicioViewModel)BindingContext;
-
-            vm.SetValor(
-                radio.GroupName,
-                radio.Value
-            );
-        }
-
-
-        private async void Guardar_Clicked(object sender, EventArgs e)
-        {
-
-            await DisplayAlert("Checklist", "Checklist guardado", "OK");
+            _viewModel.SetValor(radio.GroupName, radio.Value);
         }
     }
 }
